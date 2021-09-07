@@ -1,4 +1,4 @@
-export interface Department { 
+export type Department =  { 
     id : number , 
     department_name : string 
 }

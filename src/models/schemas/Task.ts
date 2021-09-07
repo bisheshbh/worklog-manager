@@ -1,4 +1,4 @@
-export interface Task { 
+export type Task = { 
     id : number, 
     task_description : string , 
     created_date : string , 
