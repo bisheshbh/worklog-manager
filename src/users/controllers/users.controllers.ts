@@ -1,21 +1,22 @@
-import { RequestHandler } from "express";
-import { connection } from "../../database/config";
+import { NextFunction, request, RequestHandler } from "express";
+import  {connection}  from "../../database/config";
 import { getUsers, registerUser } from "../services/users.service";
 import { Router } from "express";
 import express from 'express'
 import bodyParser from "body-parser";
 import { check, validationResult } from "express-validator";
 import { url } from "inspector";
-// const app = express()
+
+var urlencodedParser = bodyParser.urlencoded({ extended: false }) 
 
 
 const router = Router()
-const urlencodedParser = bodyParser.urlencoded({extended:false})
+
 router.get('/register', (req ,res , next) => {
     res.render('register')
 })
 
-router.post('/register', [
+router.post('/register', urlencodedParser, [
     check('username', 'Username is required')
     .not().isEmpty(),
     check('email', 'Email is required')
@@ -26,26 +27,25 @@ router.post('/register', [
     .isLength({min:8}),
     check('address', 'Address must not be empty')
     .not().isEmpty()
-],(req: { body: { username: string; email: string; password: string; dateofbirth: string; address: string; }; }, res: any, next: any)=> {
+],(req: express.Request, res: express.Response, next: express.NextFunction)=> {
     const allErrors = validationResult(req)
-    if(allErrors){
+    if(!allErrors.isEmpty()){
         const errors = allErrors.array()
         res.render('register', {
             errors
         })
-    }else{
-
-    let username : string = req.body.username 
-    let email : string = req.body.email 
-    let password : string = req.body.password 
-    let dateofbirth : string = req.body.dateofbirth
-    let address : string = req.body.address
-    let isadmin = false 
-    const createdUser = registerUser(username , email , password , dateofbirth, address , isadmin)
-    if(createdUser){
-        res.send("Success")
-        }
     }
+    else{
+
+        let username : string = req.body.username 
+        let email : string = req.body.email 
+        let password : string = req.body.password 
+        let dateofbirth : string = req.body.date_of_birth
+        let address : string = req.body.address
+        let isadmin = false 
+        const createdUser= registerUser(username , email , password , dateofbirth, address , isadmin)
+        console.log(createdUser)
+   }
 })
 
 export default router;

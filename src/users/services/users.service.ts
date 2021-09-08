@@ -1,9 +1,10 @@
-import { connection } from "../../database/config";
+import {connection} from "../../database/config";
 import passwordHash from 'password-hash'
 import { stringify } from "querystring";
+import {v4} from 'uuid';
 
-connection.connect()
 
+const uuid = v4()
 
 export function getUsers(email : string):Object{
     connection.query('SELECT * FROM USER WHERE email = ?', [email], (err, rows, fields) => {
@@ -16,14 +17,21 @@ export function getUsers(email : string):Object{
 }
 
 export function registerUser(username:string , email:string , password:string , dateofbirth:string, address:string , isadmin:boolean){
+    // connection.connect()
+    console.log(dateofbirth)
     const hashedPassword = passwordHash.generate(password);
-    connection.query('INSERT INTO USER VALUES(? , ? , ? , ? , ? , ?', [username , email , hashedPassword, dateofbirth, address , isadmin], (err, rows ,fields) => {
+    const user_id = uuid
+    var result;
+    connection.query('INSERT INTO user VALUES(? , ? , ? , ? , ? , ? , ?)', [user_id, username , email , hashedPassword, dateofbirth, address , isadmin], (err, rows ,fields) => {
         if(!err){
             return true
+
+        }else{
+            return err
+
         }
-        return false
     })
-    return false 
+    
 }
 
 function getUserPassword(email:string){
