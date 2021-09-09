@@ -17,8 +17,7 @@ export function getUsers(email : string):Object{
     return {}
 }
 
-export function registerUser(username:string , email:string , password:string , dateofbirth:string, address:string , isadmin:boolean, callback:any){
-    console.log(dateofbirth)
+export function registerUser(username:string , email:string , password:string , dateofbirth:string, address:string , isadmin:boolean, callback:(result:boolean|object)=>void){
     const hashedPassword = passwordHash.generate(password);
     const userId = uuid
     var result;
@@ -35,38 +34,35 @@ export function registerUser(username:string , email:string , password:string , 
     
 }
 
-    
-
-function getUserPassword(email:string, callback:any){
+function getUserPassword(email:string, callback:(result:boolean|string)=>void){
     let storedPassword:string;
     connection.query('SELECT PASSWORD FROM user WHERE EMAIL = ?',[email], (err, rows, field) => {
         if(!err){
             if(rows.length!=0){
                 return callback(rows[0].PASSWORD)
             }
-            console.log(false)
             return callback(false)
            
         }
       
-        return callback(err)
+        return callback(false)
     }) 
     
 }
 
-function generateCookie(email:string){
+function generateCookie(email:string):string{
     let toEncryptCookie = AES.encrypt(email , "introcept").toString()
     return toEncryptCookie
 }
 
-function decryptCookie(cookie:any){
+function decryptCookie(cookie:any):string{
     let toDecryptCookie = AES.decrypt(cookie , "introcept").toString()
     return toDecryptCookie
 }
 
 export function loginUser(email : string , password : string, callback:any){
-    getUserPassword(email, (storedPassword:string)=>{
-        if(storedPassword){
+    getUserPassword(email, (storedPassword:string|boolean)=>{
+        if(typeof storedPassword === 'string'){
             let access = passwordHash.verify(password , storedPassword)
             if(access){
                 let cookie = generateCookie(email)
