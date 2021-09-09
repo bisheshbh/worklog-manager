@@ -44,7 +44,7 @@ router.post('/register', urlencodedParser, [
         let address : string = req.body.address
         let isadmin = false 
         const createdUser= registerUser(username , email , password , dateofbirth, address , isadmin)
-        console.log(createdUser)
+        console.log("dsd", createdUser)
    }
 })
 
