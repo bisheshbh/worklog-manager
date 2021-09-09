@@ -74,13 +74,7 @@ router.post('/login', urlencodedParser, [
     let password : string = req.body.password
     loginUser(email , password, function(response:any, cookie:string){
         if(response==true){
-                res.cookie('sid', cookie, {
-                    maxAge:5000,
-                    expires: new Date('01 12 2021'),
-                    secure:true,
-                    httpOnly:true,
-                    sameSite:'lax'
-                })
+                res.cookie('sid', cookie)
                 res.send("Success")
         }
         res.render('login', {
@@ -95,5 +89,4 @@ router.get('/logout', (req:express.Request, res:express.Response, next:express.N
 
 })
 
-export default router;
-
+export default Router;

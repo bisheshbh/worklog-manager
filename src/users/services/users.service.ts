@@ -50,14 +50,27 @@ function getUserPassword(email:string, callback:(result:boolean|string)=>void){
     
 }
 
+function generateCookie(email:string):string{
+    let toEncryptCookie = AES.encrypt(email , "introcept").toString()
+    return toEncryptCookie
+}
+
+export function decryptCookie(cookie:any):string{
+    let toDecryptCookie = AES.decrypt(cookie , "introcept").toString()
+    if(toDecryptCookie){
+        return toDecryptCookie
+
+    }
+    return ""
+}
 
 export function loginUser(email : string , password : string, callback:any){
     getUserPassword(email, (storedPassword:string|boolean)=>{
         if(typeof storedPassword === 'string'){
             let access = passwordHash.verify(password , storedPassword)
             if(access){
-                
-                return callback(access, "true")
+                let cookie = generateCookie(email)
+                return callback(access, cookie)
             }
         }
         return callback(false)
