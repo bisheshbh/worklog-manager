@@ -2,6 +2,7 @@ import {connection} from "../../database/config";
 import passwordHash from 'password-hash'
 import { stringify } from "querystring";
 import {v4} from 'uuid';
+import {AES} from 'crypto-js'
 
 
 const uuid = v4()
@@ -16,39 +17,61 @@ export function getUsers(email : string):Object{
     return {}
 }
 
-export function registerUser(username:string , email:string , password:string , dateofbirth:string, address:string , isadmin:boolean){
+export function registerUser(username:string , email:string , password:string , dateofbirth:string, address:string , isadmin:boolean, callback:any){
     console.log(dateofbirth)
     const hashedPassword = passwordHash.generate(password);
     const user_id = uuid
     var result;
     connection.query('INSERT INTO user VALUES(? , ? , ? , ? , ? , ? , ?)', [user_id, username , email , hashedPassword, dateofbirth, address , isadmin], (err, rows ,fields) => {
         if(err){
-            return err
+            result = err
+            return callback(result)
 
         }else{
-            return err
+            return callback(true)
 
         }
     })
     
 }
 
-function getUserPassword(email:string){
+    
+
+function getUserPassword(email:string, callback:any){
     let storedPassword:string;
-    connection.query('SELECT PASSWORD FROM USER WHERE EMAIL = ?',[email], (err, rows, field) => {
+    connection.query('SELECT PASSWORD FROM user WHERE EMAIL = ?',[email], (err, rows, field) => {
         if(!err){
-            return rows
+            return callback(rows)
         }
-        return err 
+      
+        return callback(err)
     }) 
-    return ""
+    
 }
 
-export function loginUser(email : string , password : string){
-    let storedPassword = getUserPassword(email)
-    let access = passwordHash.verify(storedPassword , password)
-    if(access){
-        return true
-    }
-    return false
+function generateCookie(email:string){
+    let encrypted = AES.encrypt(email , "introcept").toString()
+    return encrypted
 }
+
+function decryptCookie(cookie:any){
+    let decrypted = AES.decrypt(cookie , "introcept").toString()
+    return decryptCookie
+}
+
+export function loginUser(email : string , password : string, callback:any){
+    getUserPassword(email, (storedPassword:string)=>{
+        if(storedPassword){
+            console.log(storedPassword)
+            let access = passwordHash.verify(password , storedPassword)
+            console.log(access)
+            if(access){
+                let cookie = generateCookie(email)
+                return callback(access, cookie)
+            }
+            
+        }
+    })
+}
+
+

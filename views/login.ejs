@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-    <title>Register</title>
+    <title>Login</title>
 </head>
 <body>
   <% if(typeof sqlerror != 'undefined') { %>
@@ -35,31 +35,15 @@
               <div class="card rounded-3">
                 <img src="https://mdbootstrap.com/img/Photos/new-templates/bootstrap-registration/img3.jpg" class="w-100" style="border-top-left-radius: .3rem; border-top-right-radius: .3rem;" alt="Sample photo">
                 <div class="card-body p-4 p-md-5">
-                  <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">Registration Info</h3>
+                  <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">Login</h3>
       
-                  <form action="/users/register" method="POST" class="px-md-2">
-      
-                    <div class="form-outline mb-4">
-                      <input type="text" id="username" class="form-control" name="username"/>
-                      <label class="form-label" for="username">Username</label>
-                    </div>
+                  <form action="/users/login" method="POST" class="px-md-2">
+    
 
                     <div class="form-outline mb-4">
                       <input type="email" id="email" class="form-control" name="email"/>
                       <label class="form-label" for="email">Email</label>
                     </div>
-
-                    <div class="form-outline mb-4">
-                      <input type="date" id="dob" class="form-control" name="date_of_birth"/>
-                      <label class="form-label" for="dob">Date of birth</label>
-                    </div>
-
-                    <div class="form-outline mb-4">
-                      <input type="text" id="address" class="form-control" name="address"/>
-                      <label class="form-label" for="address">Address</label>
-                    </div>
-
-
                     <div class="form-outline mb-4">
                       <input type="password" id="password" class="form-control" name="password"/>
                       <label class="form-label" for="password">Password</label>
