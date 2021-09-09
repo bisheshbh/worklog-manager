@@ -34,24 +34,24 @@ router.post('/register', urlencodedParser, [
         res.render('register', {
             errors
         })
-    }else{
-        let username : string = req.body.username 
-        let email : string = req.body.email 
-        let password : string = req.body.password 
-        let dateofbirth : string = req.body.date_of_birth
-        let address : string = req.body.address
-        let isadmin = false 
-        registerUser(username , email , password , dateofbirth, address , isadmin, function(response:any){
-            if(response == true){
-                res.send("Success")
-            }else{
-                res.render('register', {
-                    sqlerror : response.sqlMessage
-                })
-            }
+    }
+    let username : string = req.body.username 
+    let email : string = req.body.email 
+    let password : string = req.body.password 
+    let dateofbirth : string = req.body.date_of_birth
+    let address : string = req.body.address
+    let isadmin = false 
+    registerUser(username , email , password , dateofbirth, address , isadmin, function(response:any){
+        if(response == true){
+            res.send("Success")
+        }
+        res.render('register', {
+            sqlerror : response.sqlMessage
         })
         
-   }
+    })
+        
+   
 })
 
 router.get('/login', (req:express.Request, res:express.Response, next:express.NextFunction) => {
@@ -72,28 +72,25 @@ router.post('/login', urlencodedParser, [
         res.render('login', {
             errors
         })
-    }else{
-        let email: string = req.body.email
-        let password : string = req.body.password
-        loginUser(email , password, function(response:any, cookie:string){
-            if(response==true){
-                    res.cookie('sid', cookie, {
-                        maxAge:5000,
-                        expires: new Date('01 12 2021'),
-                        secure:true,
-                        httpOnly:true,
-                        sameSite:'lax'
-                    })
-                    res.send("Success")
-            }else{
-                res.render('login', {
-                    sqlerror : "Username or password is invalid"
-                })
-            }
-        })
-            
-        
     }
+    let email: string = req.body.email
+    let password : string = req.body.password
+    loginUser(email , password, function(response:any, cookie:string){
+        if(response==true){
+                res.cookie('sid', cookie, {
+                    maxAge:5000,
+                    expires: new Date('01 12 2021'),
+                    secure:true,
+                    httpOnly:true,
+                    sameSite:'lax'
+                })
+                res.send("Success")
+        }
+        res.render('login', {
+            sqlerror : "Username or password is invalid"
+        })
+        
+    })
 })
 
 router.get('/logout', (req:express.Request, res:express.Response, next:express.NextFunction)=>{

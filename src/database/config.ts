@@ -13,4 +13,3 @@ export let connection = mysql.createConnection({
 
 connection.connect()
 
-// export default connection;

@@ -20,9 +20,9 @@ export function getUsers(email : string):Object{
 export function registerUser(username:string , email:string , password:string , dateofbirth:string, address:string , isadmin:boolean, callback:any){
     console.log(dateofbirth)
     const hashedPassword = passwordHash.generate(password);
-    const user_id = uuid
+    const userId = uuid
     var result;
-    connection.query('INSERT INTO user VALUES(? , ? , ? , ? , ? , ? , ?)', [user_id, username , email , hashedPassword, dateofbirth, address , isadmin], (err, rows ,fields) => {
+    connection.query('INSERT INTO user VALUES(? , ? , ? , ? , ? , ? , ?)', [userId, username , email , hashedPassword, dateofbirth, address , isadmin], (err, rows ,fields) => {
         if(err){
             result = err
             return callback(result)
@@ -41,7 +41,12 @@ function getUserPassword(email:string, callback:any){
     let storedPassword:string;
     connection.query('SELECT PASSWORD FROM user WHERE EMAIL = ?',[email], (err, rows, field) => {
         if(!err){
-            return callback(rows)
+            if(rows.length!=0){
+                return callback(rows[0].PASSWORD)
+            }
+            console.log(false)
+            return callback(false)
+           
         }
       
         return callback(err)
@@ -50,27 +55,25 @@ function getUserPassword(email:string, callback:any){
 }
 
 function generateCookie(email:string){
-    let encrypted = AES.encrypt(email , "introcept").toString()
-    return encrypted
+    let toEncryptCookie = AES.encrypt(email , "introcept").toString()
+    return toEncryptCookie
 }
 
 function decryptCookie(cookie:any){
-    let decrypted = AES.decrypt(cookie , "introcept").toString()
-    return decryptCookie
+    let toDecryptCookie = AES.decrypt(cookie , "introcept").toString()
+    return toDecryptCookie
 }
 
 export function loginUser(email : string , password : string, callback:any){
     getUserPassword(email, (storedPassword:string)=>{
         if(storedPassword){
-            console.log(storedPassword)
             let access = passwordHash.verify(password , storedPassword)
-            console.log(access)
             if(access){
                 let cookie = generateCookie(email)
                 return callback(access, cookie)
             }
-            
         }
+        return callback(false)
     })
 }
 
