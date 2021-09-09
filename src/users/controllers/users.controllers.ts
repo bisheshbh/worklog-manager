@@ -48,10 +48,7 @@ router.post('/register', urlencodedParser, [
         res.render('register', {
             sqlerror : response.sqlMessage
         })
-        
     })
-        
-   
 })
 
 router.get('/login', (req:express.Request, res:express.Response, next:express.NextFunction) => {
@@ -89,7 +86,6 @@ router.post('/login', urlencodedParser, [
         res.render('login', {
             sqlerror : "Username or password is invalid"
         })
-        
     })
 })
 
