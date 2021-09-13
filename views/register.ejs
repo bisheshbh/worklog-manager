@@ -57,9 +57,9 @@
                       <label class="form-label" for="password">Password</label>
                     </div>
                     <div class="form-outline mb-4">
-                      <select>
+                      <select name="department" id="department">
                       <% departments.forEach(function(department) { %>
-                          <option value={{department.id}}>
+                          <option value="<%=department.id %>" name="department" id="department">
                             <%= department.department_name %>
                           </option>
                     <% }) %>

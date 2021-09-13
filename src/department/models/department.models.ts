@@ -22,13 +22,7 @@ class Department {
         return result
     }
 
-    async getDepartmentId(name:string): Promise<number>{
-
-        return 11
-    }
-
 }
 
 let department = new Department();
-department.getDepartmentId("ddsd");
 export default department;

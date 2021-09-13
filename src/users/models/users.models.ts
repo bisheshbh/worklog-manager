@@ -6,10 +6,9 @@ import passwordHash from 'password-hash'
 class UserModel {
     tableName : string = 'user';
 
-    create : createUser  = async ({username , email , password , date_of_birth , address , isAdmin=0, departmentName}) : Promise<boolean>=> {
-        const departmentId = await department.getDepartmentId(departmentName)
+    create : createUser  = async ({username , email , password , date_of_birth , address , isAdmin=0, department}) : Promise<boolean>=> {
         const hashedPassword = passwordHash.generate(password);
-        const sql = `INSERT INTO ${this.tableName} (username , email , password , date_of_birth, address, is_admin, department_id)VALUES("${username}","${email}","${hashedPassword}","${date_of_birth}","${address}",${isAdmin}, ${departmentId})`;
+        const sql = `INSERT INTO ${this.tableName} (username , email , password , date_of_birth, address, is_admin, department_id)VALUES("${username}","${email}","${hashedPassword}","${date_of_birth}","${address}",${isAdmin}, ${department})`;
         const result = await db.run(sql);
         console.log(result)
         if(result != false){

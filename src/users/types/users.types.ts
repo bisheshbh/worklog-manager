@@ -5,7 +5,7 @@ export type User = {
     date_of_birth:string , 
     address:string , 
     isAdmin:number, 
-    departmentName:string
+    department:number
 }
 
 export type createUser = ({}:User) => Promise<Boolean>

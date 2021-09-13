@@ -22,7 +22,7 @@ export let createUserValidation = [
         .not().isEmpty()
         .withMessage("Address is required"),
     body('department')
-        .exists()
+        .not().isEmpty()
         .withMessage('Department is required')
 ]
 
