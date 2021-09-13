@@ -29,6 +29,7 @@
     "express": "^4.17.1",
     "express-validator": "^6.12.1",
     "mysql": "^2.18.1",
+    "mysql2": "^2.3.0",
     "password-hash": "^1.2.2",
     "uuid": "^8.3.2"
   }

@@ -56,6 +56,17 @@
                       <input type="password" id="password" class="form-control" name="password"/>
                       <label class="form-label" for="password">Password</label>
                     </div>
+                    <div class="form-outline mb-4">
+                      <select>
+                      <% departments.forEach(function(department) { %>
+                          <option value={{department.id}}>
+                            <%= department.department_name %>
+                          </option>
+                    <% }) %>
+                      </select>
+                      
+                      <label class="form-label" for="department">Department</label>
+                    </div>
       
       
                     <button type="submit" class="btn btn-success btn-lg mb-1">Submit</button>
