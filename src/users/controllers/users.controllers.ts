@@ -2,9 +2,9 @@ import { RequestHandler, response, Router } from "express";
 import express from 'express'
 import bodyParser from "body-parser";
 import { check, validationResult } from "express-validator";
-import userModel from '../models/users.models'
-import usersService from "../services/users.service";
-import department from "../../department/models/department.models";
+import {userModel} from '../models/users.models'
+import {usersService} from "../services/users.service";
+import {departmentModel} from "../../department/models/department.models";
 
 class UsersController { 
 
@@ -15,8 +15,7 @@ class UsersController {
 
 
     getRegister : RequestHandler = async(req:express.Request, res:express.Response, next:express.NextFunction) => {
-        const departments = await department.getDepartmentData()
-        // console.log(departments)
+        const departments = await departmentModel.getDepartmentData()
         res.render('register', {departments})
     }
 
@@ -24,7 +23,7 @@ class UsersController {
         let errors = this.checkValidation(req);
         if(errors){
 
-            res.render('register', {errors:errors, departments:await department.getDepartmentData()});
+            res.render('register', {errors:errors, departments:await departmentModel.getDepartmentData()});
 
         }
         try{
@@ -32,9 +31,9 @@ class UsersController {
                 console.log("created");
                 res.redirect('/users/login');
             }
-            res.render('register', {errors:[{'msg':'Something is wrong!', }], departments:await department.getDepartmentData()});
+            res.render('register', {errors:[{'msg':'Something is wrong!', }], departments:await departmentModel.getDepartmentData()});
         }catch(err){
-            res.render('register', {departments:await department.getDepartmentData()});
+            res.render('register', {departments:await departmentModel.getDepartmentData()});
         }
     }
 
@@ -70,5 +69,4 @@ class UsersController {
 
 }
 
-let usersController = new UsersController()
-export default usersController;
+export let usersController = new UsersController()

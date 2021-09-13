@@ -1,7 +1,6 @@
 require('dotenv').config()
 import { errorMonitor } from 'events';
 import mysql from 'mysql2/promise'
-import userModel from '../users/models/users.models';
 
 class DatabaseConnection{
     db;
@@ -13,8 +12,7 @@ class DatabaseConnection{
             database : process.env.DB_NAME
         });
     }  
-
-
+    
     run = async (sql:string) => {
         try {
             let [rows, fields] = await (await this.db).execute(sql);
@@ -27,6 +25,5 @@ class DatabaseConnection{
     }
 }
 
-let db = new DatabaseConnection();
+export let db = new DatabaseConnection();
 
-export default db;

@@ -1,5 +1,4 @@
-import db from '../database/config'
-import userModel from '../users/models/users.models';
+import {db} from '../database/config'
 
 class CreateTable {
     userTable: string;
@@ -54,4 +53,4 @@ class CreateTable {
         
     }
 }
-export let c = new CreateTable();
+export let createTable = new CreateTable();

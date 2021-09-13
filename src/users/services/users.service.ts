@@ -1,8 +1,8 @@
-import db from "../../database/config";
+import {db} from "../../database/config";
 import passwordHash from 'password-hash'
 import { stringify } from "querystring";
 import {AES, enc} from 'crypto-js'
-import userModel from "../models/users.models";
+import {userModel} from "../models/users.models";
 
 
 
@@ -27,7 +27,7 @@ class UsersService {
     decryptCookie = (cookie : string)=>{
         let bytes = AES.decrypt(cookie , "introcept")
         var decryptValue = bytes.toString(enc.Utf8)
-        console.log("sdds",decryptValue)
+        console.log("decrypt cookie function",decryptValue)
         if(decryptValue){
             return decryptValue
         }
@@ -38,8 +38,17 @@ class UsersService {
         return cookie
     }
 
+    getCurrentUserId = async(cookie:string) => {
+        let user = this.decryptCookie(cookie)
+        if(user){
+            const userData : any= await userModel.findOne(user)
+            if(userData.length != 0){
+                return userData[0].id
+            }
+        }
+    }
+
 }
 
 
-let usersService = new UsersService()
-export default usersService;
+export let usersService = new UsersService()

@@ -1,10 +1,9 @@
 import { RequestHandler, Router } from "express";
 import express from 'express'
-import worklogsController from '../controllers/worklogs.controller'
-import auth from "../../middleware/auth/auth.middleware";
+import {worklogsController} from '../controllers/worklogs.controller'
+import {auth} from "../../middleware/auth/auth.middleware";
 
-const router = Router()
+export const worklogsRouter = Router()
 
-router.get('/main', auth.checkAuth, worklogsController.getMain)
+worklogsRouter.get('/main', auth.checkAuth, worklogsController.getMain)
 
-export default router;

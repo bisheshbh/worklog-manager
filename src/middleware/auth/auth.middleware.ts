@@ -1,7 +1,7 @@
-import usersService from "../../users/services/users.service";
+import {usersService} from "../../users/services/users.service";
 import express from 'express'
 import cookieParser from "cookie-parser";
-import userModel from "../../users/models/users.models";
+import {userModel} from "../../users/models/users.models";
 
 
 class Auth {
@@ -10,9 +10,11 @@ class Auth {
         try {
             let cookie =  req.cookies;
             if(cookie.sid){
-                next();
+                console.log("Auth middleware", cookie.sid)
+                return next();
             }
-            res.redirect('/users/login');
+            console.log("No cookie","Hit")
+            return res.redirect('/users/login');
         }catch(e){
             return res.redirect('/users/login');
             
@@ -41,5 +43,4 @@ class Auth {
     }
 }
 
-let auth = new Auth();
-export default auth;
+export let auth = new Auth();

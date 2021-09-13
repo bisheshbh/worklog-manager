@@ -1,7 +1,7 @@
-import db from "../../database/config";
-import { departments } from "../data/department.data";
+import {db} from "../../database/config";
+import { departments } from "../data/department";
 
-class Department {
+class DepartmentModel {
 
     tableName = 'department'
     insertData= async() => {
@@ -10,8 +10,7 @@ class Department {
             try{
                 await db.run(sql);
             }catch(e){
-                console.log(e)
-                return 
+                throw e;
             }
         })
         }
@@ -24,5 +23,4 @@ class Department {
 
 }
 
-let department = new Department();
-export default department;
+export let departmentModel = new DepartmentModel();
