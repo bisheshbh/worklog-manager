@@ -26,7 +26,6 @@ class Auth {
             let cookie = req.cookies;
             if(cookie.sid){
                 let user = usersService.decryptCookie(cookie.sid);
-                console.log(user);
                 if(typeof user != 'undefined'){
                     let result:any = await userModel.findOne(user);
                     if(result.length != 0){

@@ -16,8 +16,9 @@ class DatabaseConnection{
     run = async (sql:string) => {
         try {
             let [rows, fields] = await (await this.db).execute(sql);
-            let parsedResult = JSON.parse(JSON.stringify(rows));
-            return parsedResult;
+            return rows
+            console.log("not even running")
+           
         } catch (error) {
             console.log(error)
             return false;

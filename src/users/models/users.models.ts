@@ -24,7 +24,7 @@ class UserModel {
 
     checkEmail = async(email:string):Promise<Boolean> => {
         const sql = `SELECT * FROM ${this.tableName} WHERE email = "${email}"`
-        const result : [] = await db.run(sql)
+        const result : any = await db.run(sql)
         if (result.length != 0){
             return true
         }
@@ -34,21 +34,18 @@ class UserModel {
     findOne = async (email : string):Promise<[]>  => {
         if(this.checkEmail(email)){
             const sql = `SELECT * FROM ${this.tableName} WHERE email = "${email}"`
-            const result :[] = await db.run(sql)
+            const result :any = await db.run(sql)
             return result
         }
         return []
         
     }
-
-
+    
     findAll = async (email:string) : Promise<Object|[]> =>{
         const sql = `SELECT * FROM ${this.tableName}`
         const result : any= await db.run(sql)
         return result
     }
-
-    
 }
 
 export let userModel = new UserModel()

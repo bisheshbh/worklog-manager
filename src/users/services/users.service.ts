@@ -47,8 +47,6 @@ class UsersService {
             }
         }
     }
-
 }
-
 
 export let usersService = new UsersService()

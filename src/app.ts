@@ -6,6 +6,7 @@ import {adminRouter} from './admin/routes/admin.route'
 import {createTable} from './migrations/create-table'
 import 'cookie-parser'
 import cookieParser from 'cookie-parser';
+import { departmentModel } from './department/models/department.models';
 
 
 
@@ -13,8 +14,9 @@ const app = express()
 app.set('view engine', 'ejs')
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: true }));
-app.get('/db/migrate', (req , res)=>{
+app.get('/db/migrate', async(req , res)=>{
     createTable.createTable()
+   
 })
 app.use('/users', userRouter)
 app.use('/worklogs', worklogsRouter)

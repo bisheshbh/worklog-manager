@@ -46,7 +46,7 @@ class UsersController {
             if(await usersService.match(req.body.email, req.body.password)){
                 let cookie : string = usersService.login(req.body.email);
                 res.cookie("sid", cookie);
-                res.send("DOne");
+                res.redirect('/worklogs/main')
             }
             res.render('login', {errors:[{'msg':'Username or password is invalid'}]})
         } catch (error) {

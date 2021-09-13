@@ -6,7 +6,9 @@ class DepartmentModel {
     tableName = 'department'
     insertData= async() => {
          departments.names.map(async (department)=>{
-            const sql = `INSERT INTO ${this.tableName} (department_name) VALUES ("${department}")`
+            const sql = `INSERT INTO ${this.tableName} 
+            (department_name) VALUES 
+            ("${department}")`
             try{
                 await db.run(sql);
             }catch(e){
