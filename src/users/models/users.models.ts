@@ -12,7 +12,8 @@ class UserModel {
         `INSERT INTO ${this.tableName} 
         (username , email , password , date_of_birth, 
         address, is_admin, department_id)VALUES("${username}","${email}","${hashedPassword}","${date_of_birth}",
-        "${address}",${isAdmin}, ${department})`;
+        "${address}",${isAdmin}, ${department})
+        `;
         const result = await db.run(sql);
         console.log(result)
         if(result != false){
@@ -23,7 +24,9 @@ class UserModel {
     }
 
     checkEmail = async(email:string):Promise<Boolean> => {
-        const sql = `SELECT * FROM ${this.tableName} WHERE email = "${email}"`
+        const sql = `
+        SELECT * FROM ${this.tableName} WHERE email = "${email}"
+        `
         const result : any = await db.run(sql)
         if (result.length != 0){
             return true
@@ -33,7 +36,9 @@ class UserModel {
 
     findOne = async (email : string):Promise<[]>  => {
         if(this.checkEmail(email)){
-            const sql = `SELECT * FROM ${this.tableName} WHERE email = "${email}"`
+            const sql = `
+            SELECT * FROM ${this.tableName} WHERE email = "${email}"
+            `
             const result :any = await db.run(sql)
             return result
         }
@@ -42,7 +47,9 @@ class UserModel {
     }
     
     findAll = async (email:string) : Promise<Object|[]> =>{
-        const sql = `SELECT * FROM ${this.tableName}`
+        const sql = `
+        SELECT * FROM ${this.tableName}
+        `
         const result : any= await db.run(sql)
         return result
     }

@@ -6,9 +6,11 @@ class DepartmentModel {
     tableName = 'department'
     insertData= async() => {
          departments.names.map(async (department)=>{
-            const sql = `INSERT INTO ${this.tableName} 
+            const sql = `
+            INSERT INTO ${this.tableName} 
             (department_name) VALUES 
-            ("${department}")`
+            ("${department}")
+            `;
             try{
                 await db.run(sql);
             }catch(e){
@@ -18,7 +20,9 @@ class DepartmentModel {
         }
 
     getDepartmentData = async() =>{
-        const sql = `SELECT * FROM ${this.tableName}`
+        const sql = `
+        SELECT * FROM ${this.tableName}
+        `;
         const result : any = await db.run(sql);
         return result
     }
