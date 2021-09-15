@@ -7,7 +7,6 @@ class WorkLogsModel {
     tableName = 'task';
 
     create  = async(task_description:string , created_date:string , user_id:string) : Promise<Boolean>=> {
-        console.log("Hit")
         let is_edited = 0
         const sql = `
         INSERT INTO ${this.tableName} 
