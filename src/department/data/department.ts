@@ -1,6 +1,6 @@
 interface Department{
     names : String[]
-}
+};
 
 export const departments : Department = {
     'names':[
@@ -14,4 +14,4 @@ export const departments : Department = {
         'Product Management',
         'Data Support'
     ]
-}
+};

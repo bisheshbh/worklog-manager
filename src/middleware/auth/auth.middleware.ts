@@ -1,23 +1,17 @@
 import {usersService} from "../../users/services/users.service";
-import express from 'express'
-import cookieParser from "cookie-parser";
+import express from 'express';
 import {userModel} from "../../users/models/users.models";
 
-
 class Auth {
-
     checkAuth =  (req:express.Request, res:express.Response, next:express.NextFunction)=>{
         try {
             let cookie =  req.cookies;
             if(cookie.sid){
-                console.log("Auth middleware", cookie.sid)
                 return next();
             }
-            console.log("No cookie","Hit")
             return res.redirect('/users/login');
         }catch(e){
             return res.redirect('/users/login');
-            
         }
     }
 
@@ -29,7 +23,7 @@ class Auth {
                 if(typeof user != 'undefined'){
                     let result:any = await userModel.findOne(user);
                        if(result.length != 0){
-                        let [user] = result
+                        let [user] = result;
                         if(user.is_admin){
                             return next();
                         }

@@ -1,6 +1,5 @@
-require('dotenv').config()
-import { errorMonitor } from 'events';
-import mysql from 'mysql2/promise'
+require('dotenv').config();
+import mysql from 'mysql2/promise';
 
 class DatabaseConnection{
     db;
@@ -16,11 +15,9 @@ class DatabaseConnection{
     run = async (sql:string) => {
         try {
             let [rows, fields] = await (await this.db).execute(sql);
-            return rows
-            console.log("not even running")
-           
+            return rows;
         } catch (error) {
-            console.log(error)
+            console.log(error);
             return false;
         }
     }

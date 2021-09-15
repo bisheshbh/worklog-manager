@@ -6,6 +6,6 @@ export type User = {
     address:string , 
     isAdmin:number, 
     department:number
-}
+};
 
-export type createUser = ({}:User) => Promise<Boolean>
+export type createUser = ({}:User) => Promise<Boolean>;

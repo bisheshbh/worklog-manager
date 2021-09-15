@@ -2,8 +2,7 @@ import {db} from "../../database/config";
 import { departments } from "../data/department";
 
 class DepartmentModel {
-
-    tableName = 'department'
+    tableName = 'department';
     insertData= async() => {
          departments.names.map(async (department)=>{
             const sql = `
@@ -17,16 +16,15 @@ class DepartmentModel {
                 throw e;
             }
         })
-        }
+    }
 
     getDepartmentData = async() =>{
         const sql = `
         SELECT * FROM ${this.tableName}
         `;
         const result : any = await db.run(sql);
-        return result
+        return result;
     }
-
 }
 
 export let departmentModel = new DepartmentModel();

@@ -1,7 +1,6 @@
-import {db} from '../../database/config'
-import {departmentModel} from '../../department/models/department.models';
+import {db} from '../../database/config';
 import { createUser } from '../types/users.types';
-import passwordHash from 'password-hash'
+import passwordHash from 'password-hash';
 
 class UserModel {
     tableName : string = 'user';
@@ -15,23 +14,21 @@ class UserModel {
         "${address}",${isAdmin}, ${department})
         `;
         const result = await db.run(sql);
-        console.log(result)
         if(result != false){
-            return true
+            return true;
         }
-        return false
-        
+        return false;
     }
 
     checkEmail = async(email:string):Promise<Boolean> => {
         const sql = `
         SELECT * FROM ${this.tableName} WHERE email = "${email}"
-        `
-        const result : any = await db.run(sql)
+        `;
+        const result : any = await db.run(sql);
         if (result.length != 0){
-            return true
+            return true;
         }
-        return false
+        return false;
     }
 
     findOne = async (email : string):Promise<[]>  => {
@@ -39,20 +36,20 @@ class UserModel {
             const sql = `
             SELECT * FROM ${this.tableName} WHERE email = "${email}"
             `
-            const result :any = await db.run(sql)
-            return result
+            const result :any = await db.run(sql);
+            return result;
         }
-        return []
+        return [];
         
     }
     
     findAll = async (email:string) : Promise<Object|[]> =>{
         const sql = `
         SELECT * FROM ${this.tableName}
-        `
-        const result : any= await db.run(sql)
-        return result
+        `;
+        const result : any= await db.run(sql);
+        return result;
     }
 }
 
-export let userModel = new UserModel()
+export let userModel = new UserModel();
