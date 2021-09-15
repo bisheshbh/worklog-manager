@@ -1,14 +1,5 @@
 <%- include('../headers') -%>
-<% if(typeof errors != 'undefined') { %>
-    <% errors.forEach(function(error) { %>
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <%= error.msg %>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-    <% }) %>
-<% } %>
+
 <div class="container">
 <div style="margin-bottom: 100px;">
     <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
@@ -42,7 +33,18 @@
         </div>
       </nav>
       
+
 </div>
+<% if(typeof errors != 'undefined') { %>
+    <% errors.forEach(function(error) { %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <%= error.msg %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+    <% }) %>
+<% } %>
     <form action="/worklogs/create" method="POST">
     <div class="form-group">
       <label for="task_description">Task description</label>

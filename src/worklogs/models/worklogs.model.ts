@@ -34,15 +34,18 @@ class WorkLogsModel {
 
     }
 
-    getAllFeedback = async() => {
+    getAllFeedback = async(cookie:string): Promise<[]> => {
+        const currentUserId = await usersService.getCurrentUserId(cookie);
+        console.log(currentUserId)
         const sql = `
-        SELECT * FROM ${this.tableName} INNER JOIN ${this.joinTables[0]} 
-        ON ${this.tableName}.id=${this.joinTables[0]}.id INNER JOIN 
+        SELECT task_description, comment, ${this.joinTables[1]}.id, ${this.joinTables[1]}.created_date FROM ${this.tableName} INNER JOIN ${this.joinTables[0]} 
+        ON ${this.tableName}.user_id=${this.joinTables[0]}.id INNER JOIN 
         ${this.joinTables[1]} ON 
-        ${this.joinTables[0]}.id=${this.joinTables[1]}.id
-        `;
+        ${this.tableName}.id=${this.joinTables[1]}.id
+        WHERE ${this.tableName}.user_id=${currentUserId}`;
+        console.log(sql);
         const result:any = await db.run(sql);
-        if(result != 'false'){
+        if(result != false){
             return result;
         }
         return [];

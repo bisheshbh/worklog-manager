@@ -3,7 +3,7 @@ import express from 'express';
 
 class AdminController{
     adminDashboard: RequestHandler = async(req:express.Request, res:express.Response, next:express.NextFunction)=>{
-        res.render('admin');
+        res.render('admin/admin');
     }
 }
 

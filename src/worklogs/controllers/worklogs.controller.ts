@@ -11,7 +11,9 @@ class WorklogsController {
 
     getMain : RequestHandler = async (req:express.Request, res:express.Response, next:express.NextFunction) => {
         const tasks = await worklogsModel.getAllTask(req.cookies.sid);
-        return res.render('worklogs/dashboard', {tasks});
+        const feedbacks = await worklogsModel.getAllFeedback(req.cookies.sid)
+        console.log(feedbacks)
+        return res.render('worklogs/dashboard', {tasks, feedbacks});
     }
 
 
