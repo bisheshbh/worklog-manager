@@ -13,6 +13,8 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/db/migrate', async(req , res)=>{
     createTable.createTable();
+    await departmentModel.insertData()
+    res.send("Success")
    
 })
 app.use('/users', userRouter);

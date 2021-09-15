@@ -4,6 +4,7 @@ import { check, validationResult } from "express-validator";
 import {userModel} from '../models/users.models';
 import {usersService} from "../services/users.service";
 import {departmentModel} from "../../department/models/department.models";
+import { RowDataPacket } from "mysql2";
 
 class UsersController { 
     
@@ -12,7 +13,7 @@ class UsersController {
     }
     
     getRegister : RequestHandler = async(req:express.Request, res:express.Response, next:express.NextFunction) => {
-        const departments = await departmentModel.getDepartmentData();
+        const departments : RowDataPacket = await departmentModel.getDepartmentData();
         res.render('register', {departments});
     }
     
@@ -44,7 +45,7 @@ class UsersController {
                 res.cookie("sid", cookie);
                 res.redirect('/worklogs/main');
             }
-            res.render('login', {errors:[{'msg':'Username or password is invalid'}]})
+            res.render('login', {errors:[{'msg':'Username or password is invalid'}]});
         } catch (error) {
             return error;
         }

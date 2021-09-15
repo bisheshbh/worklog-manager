@@ -10,8 +10,8 @@ class WorklogsController {
     created_date = this.today.getFullYear()+'-'+(this.today.getMonth()+1)+'-'+this.today.getDate();
 
     getMain : RequestHandler = async (req:express.Request, res:express.Response, next:express.NextFunction) => {
-        const tasks = await worklogsModel.getAllTask(req.cookies.sid);
-        const feedbacks = await worklogsModel.getAllFeedback(req.cookies.sid)
+        const tasks = await worklogsModel.getAllUserTask(req.cookies.sid);
+        const feedbacks = await worklogsModel.getAllUserFeedback(req.cookies.sid)
         console.log(feedbacks)
         return res.render('worklogs/dashboard', {tasks, feedbacks});
     }

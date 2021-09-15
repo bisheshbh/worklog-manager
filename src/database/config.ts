@@ -1,4 +1,5 @@
 require('dotenv').config();
+import { MysqlError } from 'mysql';
 import mysql from 'mysql2/promise';
 
 class DatabaseConnection{

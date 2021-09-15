@@ -1,6 +1,7 @@
 import {db} from '../../database/config';
 import { createUser } from '../types/users.types';
 import passwordHash from 'password-hash';
+import { RowDataPacket } from 'mysql2';
 
 class UserModel {
     tableName : string = 'user';
@@ -14,7 +15,8 @@ class UserModel {
         "${address}",${isAdmin}, ${department})
         `;
         const result = await db.run(sql);
-        if(result != false){
+        console.log(result)
+        if(!result){
             return true;
         }
         return false;
@@ -32,14 +34,12 @@ class UserModel {
     }
 
     findOne = async (email : string):Promise<[]>  => {
-        if(this.checkEmail(email)){
-            const sql = `
-            SELECT * FROM ${this.tableName} WHERE email = "${email}"
+        // TO remove checkEMail 
+        const sql = `
+        SELECT * FROM ${this.tableName} WHERE email = "${email}"
             `
-            const result :any = await db.run(sql);
-            return result;
-        }
-        return [];
+        const result:any = await db.run(sql);
+        return result;
         
     }
     

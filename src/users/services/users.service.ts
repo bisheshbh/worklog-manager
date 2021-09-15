@@ -25,7 +25,6 @@ class UsersService {
     decryptCookie = (cookie : string)=>{
         let bytes = AES.decrypt(cookie , "introcept");
         var decryptValue = bytes.toString(enc.Utf8);
-        console.log("decrypt cookie function",decryptValue);
         if(decryptValue){
             return decryptValue;
         }
