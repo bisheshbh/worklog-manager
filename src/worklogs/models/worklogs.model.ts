@@ -22,7 +22,7 @@ class WorkLogsModel {
     getAllUserTask = async(cookie:string) : Promise<[]>=> {
         const currentUserId = await usersService.getCurrentUserId(cookie);
         const sql = `
-        SELECT * FROM ${this.tableName} INNER JOIN 
+        SELECT task.id, task_description, created_date FROM ${this.tableName} INNER JOIN 
         user ON ${this.tableName}.user_id=user.id
         WHERE ${this.tableName}.user_id=${currentUserId}`;
         const result: any = await db.run(sql);
@@ -66,7 +66,7 @@ class WorkLogsModel {
     getTaskById = async(task_id:number) => {
         const sql = 
         `
-        SELECT task_description , username FROM ${this.tableName} INNER JOIN
+        SELECT task.id, task_description , username, created_date FROM ${this.tableName} INNER JOIN
         user ON ${this.tableName}.user_id=user.id
         WHERE ${this.tableName}.id=${task_id}
         `;
@@ -77,9 +77,16 @@ class WorkLogsModel {
         return []
     }
     
-    updateTask : updateTask= async({task_description, user_id}) : Promise<Boolean> => {
-        // TODO
-        return false;
+    updateTask = async(task_description:string, created_date:string ,task_id:string) : Promise<Boolean> => {
+        const sql = 
+        `
+        UPDATE ${this.tableName} SET task_description="${task_description}" WHERE ${this.tableName}.id=${task_id}
+        `
+        const result: any = await db.run(sql)
+        if(result != false){
+            return true
+        }
+        return false
     }
 }
 

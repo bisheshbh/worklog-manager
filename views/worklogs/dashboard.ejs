@@ -48,6 +48,15 @@
       </div>
       <br>
       <br>
+
+      <% if(typeof error != 'undefined') { %>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <%= error %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+    <% } %>
       
 
       <div class="my-3 p-3 bg-white rounded box-shadow">
@@ -58,7 +67,7 @@
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                 <div class="d-flex justify-content-between align-items-center w-100">
                     <strong class="d-block text-gray-dark"><%= task.created_date %></strong>
-                    <a href="#">Edit</a>
+                    <a href="/worklogs/update/<%= task.id %>">Edit</a>
                 </div>
                 <h4 class="d-block"> <%= task.task_description %></h4>
               </div>

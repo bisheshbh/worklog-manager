@@ -33,7 +33,6 @@ class CreateTable {
             id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
             comment VARCHAR(450),
             created_date DATE,
-            updated_date DATE,
             task_id INT,
             FOREIGN KEY (task_id) REFERENCES task(id)
         )`
