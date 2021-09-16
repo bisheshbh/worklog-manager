@@ -1,0 +1,68 @@
+<%- include('headers') -%>
+<nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Worklog Manager</a>
+    <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/worklogs/main">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/worklogs/create">Add update</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Worklogs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/users/profile">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/users/logout">Logout</a>
+        </li>
+       
+      </ul>
+    </div>
+  </nav>
+<div style="margin-top: 100px; margin-left: 100px;">
+  <h3>Change your department</h3>
+  <br>
+  <form  action="/worklogs/create" method="POST">
+    <div class="form-group">
+      <label for="task_description">Departments</label>
+      <select name="department" id="department">
+        <% departments.forEach(function(department) { %>
+            <option value="<%=department.id %>" name="department" id="department">
+              <%= department.department_name %>
+            </option>
+      <% }) %>
+        </select>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  </div>
+  <div style="margin-top: 100px; margin-left: 50px;">
+    <h3>Change your password</h3>
+    <br>
+    <form  action="/worklogs/create" method="POST">
+      <div class="form-group">
+        <label for="current_password">Current password</label>
+        <input type="password" id="password" class="form-control" name="current_password"/>
+      </div>
+      <div class="form-group">
+        <label for="current_password">New password</label>
+        <input type="password" id="password" class="form-control" name="new_password"/>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    </div>
+
+
+<%- include('footers') -%>
