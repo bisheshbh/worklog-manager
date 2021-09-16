@@ -7,7 +7,7 @@ class WorkLogsModel {
     tableName = 'task';
 
     create  = async(task_description:string , created_date:string , user_id:string) : Promise<Boolean>=> {
-         let is_edited = 0
+        let is_edited = 0
         const sql = `
         INSERT INTO ${this.tableName} 
         (task_description , created_date , is_edited, user_id) VALUES ("${task_description}", "${created_date}", ${is_edited}, ${user_id})
@@ -34,11 +34,12 @@ class WorkLogsModel {
 
     getAllTask = async() : Promise<[]> => {
         const sql = `
-        SELECT * FROM ${this.tableName} INNER JOIN 
+        SELECT task.id,task_description,created_date,username FROM ${this.tableName} INNER JOIN 
         user ON ${this.tableName}.user_id=user.id
         `;
         const result: any = await db.run(sql);
         if(result!=false){
+            console.log(result)
             return result;
         }
         return [];
@@ -53,7 +54,7 @@ class WorkLogsModel {
         INNER JOIN user
         ON ${this.tableName}.user_id=user.id INNER JOIN 
         feedback ON 
-        ${this.tableName}.id=feedback.id
+        ${this.tableName}.id=feedback.task_id
         WHERE ${this.tableName}.user_id=${currentUserId}`;
         const result:any = await db.run(sql);
         if(result!=false){
@@ -67,6 +68,7 @@ class WorkLogsModel {
         `
         SELECT task_description , username FROM ${this.tableName} INNER JOIN
         user ON ${this.tableName}.user_id=user.id
+        WHERE ${this.tableName}.id=${task_id}
         `;
         const result :any = await db.run(sql);
         if(result!=false){
