@@ -7,7 +7,7 @@ class WorkLogsModel {
     tableName = 'task';
 
     create  = async(task_description:string , created_date:string , user_id:string) : Promise<Boolean>=> {
-        let is_edited = 0
+         let is_edited = 0
         const sql = `
         INSERT INTO ${this.tableName} 
         (task_description , created_date , is_edited, user_id) VALUES ("${task_description}", "${created_date}", ${is_edited}, ${user_id})

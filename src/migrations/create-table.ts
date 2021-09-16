@@ -47,3 +47,4 @@ class CreateTable {
     }
 }
 export let createTable = new CreateTable();
+createTable.createTable()
