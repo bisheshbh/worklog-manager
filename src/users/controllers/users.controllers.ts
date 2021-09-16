@@ -16,6 +16,11 @@ class UsersController {
         const departments : RowDataPacket = await departmentModel.getDepartmentData();
         res.render('register', {departments});
     }
+
+    getProfile : RequestHandler = async(req:express.Request, res:express.Response) =>{
+        const [userProfile] = await userModel.findOneFromId(await usersService.getCurrentUserId(req.cookies.sid)) 
+        res.render('profile', {userProfile})
+    }
     
     register: RequestHandler = async(req:express.Request ,res:express.Response, next:express.NextFunction)=>{
         let errors = this.checkValidation(req);

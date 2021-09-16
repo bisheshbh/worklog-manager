@@ -39,7 +39,6 @@ class WorklogsController {
             user_id : userId, 
             created_date:this.created_date
         }
-        console.log(data.created_date)
         if(errors){
             return res.render('worklogs/create-worklog', {errors,data});
         }
