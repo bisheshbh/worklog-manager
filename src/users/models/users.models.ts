@@ -43,9 +43,10 @@ class UserModel {
         
     }
     
-    findAll = async (email:string) : Promise<Object|[]> =>{
+    findAll = async () : Promise<Object|[]> =>{
         const sql = `
-        SELECT * FROM ${this.tableName}
+        SELECT user.id , username, email, date_of_birth, address, department_name FROM ${this.tableName} INNER JOIN department ON 
+        ${this.tableName}.department_id=department.id
         `;
         const result : any= await db.run(sql);
         return result;

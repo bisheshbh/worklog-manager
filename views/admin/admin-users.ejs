@@ -40,40 +40,28 @@
     
 
     <div class="my-3 p-3 bg-white rounded box-shadow">
+      <h6 class="border-bottom border-gray pb-2 mb-0">All users</h6>
+      <% if(typeof users != 'undefined') { %>
+        <% users.forEach(function(user) { %>
           <div class="media text-muted pt-3">
             <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
               <div class="d-flex justify-content-between align-items-center w-100">
-                  <strong class="d-block text-gray-dark">By <%= task.username %></strong>
+                  <strong class="d-block text-gray-dark"><%= user.username %></strong>
+                  <strong class="d-block text-gray-dark"><%= user.email %></strong>
+                  <strong class="d-block text-gray-dark"><%= user.date_of_birth %></strong>
+                  <strong class="d-block text-gray-dark"><%= user.address %></strong>
+                  <strong class="d-block text-gray-dark"><%= user.department_name %></strong>
+
+                  <a href="#">Edit</a>
               </div>
-              <h4 class="d-block"> <%= task.task_description %></h4>
+             
             </div>
            </div>
-          </div>
-
-          <% if(typeof errors != 'undefined') { %>
-            <% errors.forEach(function(error) { %>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <%= error.msg %>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">×</span>
-                    </button>
-                  </div>
-            <% }) %>
-        <% } %>
-
-          <form action="/admin/feedback/<%= taskId %>" method="POST">
-            <div class="form-group">
-              <label for="created_date">Date</label>
-              <input readonly type="text" class="form-control" id="created_date" name="created_date" value="<%= createdDate %>">
-            </div>
-            <div class="form-group">
-              <label for="Comment">Feedback</label>
-              <textarea type="text" name="comment" class="form-control" id="comment" placeholder="Comment here..."></textarea>
-            </div>
-            <input hidden type="number" class="form-check-input" name="task_id" id="task_id" value="taskId">
-              
-            
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
+           <% }) %>
+        
+    <% } %>
+      
+    </div>
     </main>
+
   <%- include('../footers') -%>
