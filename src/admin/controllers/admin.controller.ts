@@ -4,7 +4,6 @@ import { worklogsModel } from "../../worklogs/models/worklogs.model";
 import { validationResult } from "express-validator";
 import { adminModel } from "../models/admin.models";
 import { userModel } from "../../users/models/users.models";
-import { worklogsController } from "../../worklogs/controllers/worklogs.controller";
 
 class AdminController{
     today = new Date()
@@ -43,8 +42,8 @@ class AdminController{
         }
         try {
             await adminModel.createFeedback(req.body.comment , req.body.created_date , taskId)
-            res.redirect('/admin/worklogs')
-        } catch (err) {
+            return res.redirect('/admin/worklogs')
+        } catch (error) {
             return res.render('admin/admin-feedback', {errors:[{msg:"Something went wrong!"}] , task, createdDate, taskId});
         }
          

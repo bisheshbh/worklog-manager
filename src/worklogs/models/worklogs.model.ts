@@ -1,7 +1,6 @@
 import { RowDataPacket } from 'mysql2';
 import {db} from '../../database/config';
 import { usersService } from '../../users/services/users.service';
-import {createTask, updateTask, UpdateWorklog} from '../types/worklogs.types';
 
 class WorkLogsModel {
     tableName = 'task';
@@ -26,11 +25,12 @@ class WorkLogsModel {
         SELECT task.id, task_description, created_date FROM ${this.tableName} INNER JOIN 
         user ON ${this.tableName}.user_id=user.id
         WHERE ${this.tableName}.user_id=${currentUserId}`;
-        const result: any = await db.run(sql);
-        if(result!=false){
+        try{
+            const result: any = await db.run(sql);
             return result;
+        }catch(error){
+            throw error;
         }
-        return [];
     }
 
     getAllTask = async() : Promise<[]> => {
@@ -38,12 +38,12 @@ class WorkLogsModel {
         SELECT task.id,task_description,created_date,username FROM ${this.tableName} INNER JOIN 
         user ON ${this.tableName}.user_id=user.id
         `;
-        const result: any = await db.run(sql);
-        if(result!=false){
-            console.log(result)
+        try {
+            const result: any = await db.run(sql);
             return result;
-        }
-        return [];
+        } catch (error) {
+            throw error;
+        }   
     }
 
     getAllUserFeedback = async(cookie:string): Promise<[]> => {
@@ -57,11 +57,12 @@ class WorkLogsModel {
         feedback ON 
         ${this.tableName}.id=feedback.task_id
         WHERE ${this.tableName}.user_id=${currentUserId}`;
-        const result:any = await db.run(sql);
-        if(result!=false){
-            return result;
+        try {
+            const result:any = await db.run(sql);
+            return result
+        } catch (error) {
+            throw error;
         }
-        return [];
     }
 
     getTaskById = async(task_id:number) => {
@@ -71,23 +72,24 @@ class WorkLogsModel {
         user ON ${this.tableName}.user_id=user.id
         WHERE ${this.tableName}.id=${task_id}
         `;
-        const result :any = await db.run(sql);
-        if(result!=false){
-            return result;  
+        try {
+            const result:any = await db.run(sql)
+            return result
+        } catch (error) {
+            throw error;
         }
-        return []
     }
     
-    updateTask = async(task_description:string, created_date:string ,task_id:string) : Promise<Boolean> => {
+    updateTask = async(task_description:string, created_date:string ,task_id:string) => {
         const sql = 
         `
         UPDATE ${this.tableName} SET task_description="${task_description}" WHERE ${this.tableName}.id=${task_id}
         `
-        const result: any = await db.run(sql)
-        if(result != false){
-            return true
+        try {
+            await db.run(sql)
+        } catch (error) {
+            throw error;
         }
-        return false
     }
 }
 

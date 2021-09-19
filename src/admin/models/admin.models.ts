@@ -11,8 +11,8 @@ class AdminModel {
         `;
         try {
             await db.run(sql);
-        } catch (err) {
-            throw err;
+        } catch (error) {
+            throw error;
         }
     }
 

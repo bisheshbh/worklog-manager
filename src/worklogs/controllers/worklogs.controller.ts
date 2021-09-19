@@ -43,19 +43,16 @@ class WorklogsController {
             return res.render('worklogs/create-worklog', {errors,data});
         }
         try {
-            if(await worklogsModel.create(req.body.task_description, req.body.created_date, req.body.user_id)){
-                return res.redirect('/worklogs/main');
-            }
-            return res.render('worklogs/create-worklog', {errors:[{msg:'Something is wrong !'}], data});
+            await worklogsModel.create(req.body.task_description, req.body.created_date, req.body.user_id)
+            return res.redirect('/worklogs/main');
         } catch (error) {
-            return res.render('worklogs/create-worklog', {errors:[{msg:'App crashed !'}], data});
+            return res.render('worklogs/create-worklog', {errors:[{msg:'Something is wrong !'}], data});
         }
     }
 
     getUpdateTask : RequestHandler = async(req:express.Request, res:express.Response) => {
         const userId = await usersService.getCurrentUserId(req.cookies.sid);
         const [task] = await worklogsModel.getTaskById(+req.params.id);
-        console.log(this.created_date, task.created_date)
         if(this.created_date != task.created_date){
             const error  = encodeURIComponent("Access denied . Today's post can only be edited")
             return res.redirect("/worklogs/main?error="+error)
@@ -71,12 +68,10 @@ class WorklogsController {
             return res.render('worklogs/update-worklog', {errors,task, userId});
         }
         try {
-            if(await worklogsModel.updateTask(req.body.task_description, req.body.created_date, task.id)){
-                return res.redirect('/worklogs/main');
-            }
-            return res.render('worklogs/update-worklog', {errors:[{msg:'Something is wrong !'}], task, userId});
+            await worklogsModel.updateTask(req.body.task_description, req.body.created_date, task.id)
+            return res.redirect('/worklogs/main');
         } catch (error) {
-            return res.render('worklogs/update-worklog', {errors:[{msg:'App crashed !'}], task, userId});
+            return res.render('worklogs/update-worklog', {errors:[{msg:'Something is wrong !'}], task, userId});
         }
     }
 
