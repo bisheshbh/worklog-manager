@@ -60,6 +60,18 @@ class UserModel {
         const result : any= await db.run(sql);
         return result;
     }
+
+    updateDept = async(department_id:number) : Promise<Boolean> => {
+        const sql = 
+        `
+        UPDATE ${this.tableName} set department_id=${department_id}
+        `
+        const result : any = db.run(sql)
+        if(result != false){
+            return true
+        }
+        return false
+    }
 }
 
 export let userModel = new UserModel();

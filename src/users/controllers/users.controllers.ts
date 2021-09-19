@@ -25,6 +25,13 @@ class UsersController {
     getSettings : RequestHandler = async(req:express.Request, res:express.Response) => {
         res.render('settings', {departments:await departmentModel.getDepartmentData()})
     }
+
+    updateDepartment : RequestHandler = async(req:express.Request, res:express.Response) => {
+        if(await userModel.updateDept(req.body.department)){
+                return res.redirect('/worklogs/main')
+            }
+        res.render('settings', {errors:[{msg:'Something went wrong.'}],departments:await departmentModel.getDepartmentData()})
+    }
     
     register: RequestHandler = async(req:express.Request ,res:express.Response, next:express.NextFunction)=>{
         let errors = this.checkValidation(req);
