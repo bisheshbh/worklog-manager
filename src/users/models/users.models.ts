@@ -65,15 +65,17 @@ class UserModel {
 
     updatePassword = async(cookie:string , oldPassword:string, newPassword:string) : Promise<Boolean> => {
         let hashedPassword:string = ''
-        const sql = 
-        `
-        UPDATE ${this.tableName} SET password=${hashedPassword}
-        `
         const userId : number = await usersService.getCurrentUserId(cookie);
+        console.log(userId)
         const user : User[] = await this.findOneFromId(userId);
         const email : string = user[0].email
         if(await usersService.match(email , oldPassword)){
             hashedPassword = passwordHash.generate(newPassword)
+            console.log(hashedPassword)
+            const sql = 
+            `
+            UPDATE ${this.tableName} SET password="${hashedPassword}" WHERE email = "${email}"
+            `
             try {
                 await db.run(sql);
                 return true;

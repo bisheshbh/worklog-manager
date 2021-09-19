@@ -10,7 +10,8 @@ import { doesNotMatch } from "node:assert";
 class UsersController { 
     
     getLogin : RequestHandler  = async(req:express.Request , res:express.Response, next:express.NextFunction) => {
-        res.render('login');
+        const info = req.query.info
+        res.render('login', {info});
     }
     
     getRegister : RequestHandler = async(req:express.Request, res:express.Response, next:express.NextFunction) => {
@@ -41,14 +42,16 @@ class UsersController {
     updatePassword : RequestHandler = async(req:express.Request, res:express.Response) => {
         const errors = this.checkValidation(req)
         if(errors){
-            res.render('settings', {errors, departments:await departmentModel.getDepartmentData()})
+            res.render('settings', {passwordErrors:errors, departments:await departmentModel.getDepartmentData()})
         }
         try {
-            await userModel.updatePassword(req.cookies.sid ,req.body.old_password , req.body.new_password)
-            res.redirect('/worklogs/main')
-
+            if(await userModel.updatePassword(req.cookies.sid ,req.body.current_password , req.body.new_password)){
+                res.redirect('/worklogs/main');
+            }
+            res.render('settings', {passwordErrors:[{msg:'Current password didnt match'}], departments:await departmentModel.getDepartmentData()});
         } catch (error) {
-            res.render('settings', {errors:[{msg:'Current password didnt match'}], departments:await departmentModel.getDepartmentData()})
+            console.log(error)
+            res.render('settings', {passwordErrors:[{msg:'Something went wrong'}], departments:await departmentModel.getDepartmentData()});
         }
     }
     
@@ -59,7 +62,7 @@ class UsersController {
         }
         try{
             await userModel.create(req.body)
-            res.redirect('/users/login');
+            res.redirect('/users/login?info='+encodeURIComponent("Success. Please login"));
         }catch(error){
             res.render('register', {errors:[{'msg':'Something is wrong!', }], departments:await departmentModel.getDepartmentData()});        
         }

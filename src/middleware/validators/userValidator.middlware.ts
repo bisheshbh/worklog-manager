@@ -34,6 +34,14 @@ export let loginUserValidation = [
     body('password')
         .not().isEmpty()
         .withMessage('Password is required')
-    
+]
+
+export let updatePasswordValidation = [
+    body('current_password')
+        .not().isEmpty()
+        .withMessage("Current password is empty"),
+    body('new_password')
+        .not().isEmpty()
+        .withMessage('New password is empty')
 ]
 

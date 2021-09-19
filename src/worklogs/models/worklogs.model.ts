@@ -1,3 +1,4 @@
+import { Result } from 'express-validator';
 import { RowDataPacket } from 'mysql2';
 import {db} from '../../database/config';
 import { usersService } from '../../users/services/users.service';
@@ -90,6 +91,27 @@ class WorkLogsModel {
         } catch (error) {
             throw error;
         }
+    }
+
+    filterTaskByDate = async(date:string, cookie:string, singleUser:boolean) : Promise<[]>=> {
+        const currentUserId = await usersService.getCurrentUserId(cookie);
+        const sqlCurrentUser:string = 
+        `
+        SELECT * FROM ${this.tableName} WHERE created_date="${date}" AND user_id=${currentUserId}
+        `
+        const sqlAllUser = 
+        `
+        SELECT * FROM ${this.tableName} WHERE created_date = "${date}"
+        `
+        const sql = singleUser ? sqlCurrentUser : sqlAllUser;
+        try{
+            const result : any = db.run(sql)
+            return result
+        }catch(error){
+            throw error
+        }
+
+
     }
 }
 

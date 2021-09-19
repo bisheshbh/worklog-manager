@@ -14,13 +14,19 @@ class WorklogsController {
     getMain : RequestHandler = async (req:express.Request, res:express.Response, next:express.NextFunction) => {
         const tasks = await worklogsModel.getAllUserTask(req.cookies.sid);
         const feedbacks = await worklogsModel.getAllUserFeedback(req.cookies.sid)
-        if(req.query.error){
-            const error = req.query.error
-            return res.render('worklogs/dashboard', {tasks, feedbacks, error});
-
-        }
-        return res.render('worklogs/dashboard', {tasks, feedbacks});
+        const error = req.query.error
+        const info = req.query.info
+        return res.render('worklogs/dashboard', {tasks, feedbacks, error, info});
         
+    }
+
+    getWorklogs : RequestHandler = async(req:express.Request, res:express.Response) => {
+        let tasks = await worklogsModel.getAllUserTask(req.cookies.sid);
+        if(req.query.date){
+            tasks = await worklogsModel.filterTaskByDate(req.query.date.toString() , req.cookies.sid, true);
+            return res.render('worklogs/allupdates', {tasks});
+        }
+        return res.render('worklogs/allupdates', {tasks});
     }
     
     getCreateTask : RequestHandler = async (req:express.Request, res:express.Response, next:express.NextFunction) => {
@@ -44,7 +50,7 @@ class WorklogsController {
         }
         try {
             await worklogsModel.create(req.body.task_description, req.body.created_date, req.body.user_id)
-            return res.redirect('/worklogs/main');
+            return res.redirect('/worklogs/main?info='+encodeURIComponent("Task created successfully"));
         } catch (error) {
             return res.render('worklogs/create-worklog', {errors:[{msg:'Something is wrong !'}], data});
         }
@@ -55,7 +61,7 @@ class WorklogsController {
         const [task] = await worklogsModel.getTaskById(+req.params.id);
         if(this.created_date != task.created_date){
             const error  = encodeURIComponent("Access denied . Today's post can only be edited")
-            return res.redirect("/worklogs/main?error="+error)
+            return res.redirect("/worklogs/allupdates?error="+error)
         }
         return res.render('worklogs/update-worklog', {task, userId})
     }
@@ -69,7 +75,7 @@ class WorklogsController {
         }
         try {
             await worklogsModel.updateTask(req.body.task_description, req.body.created_date, task.id)
-            return res.redirect('/worklogs/main');
+            return res.redirect('/worklogs/main?info='+encodeURIComponent("Task updated successfully"));
         } catch (error) {
             return res.render('worklogs/update-worklog', {errors:[{msg:'Something is wrong !'}], task, userId});
         }

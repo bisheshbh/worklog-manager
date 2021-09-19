@@ -10,7 +10,9 @@ class UsersService {
     match = async(email:string , password:string) => {
         try{
             const result:any = await userModel.findOne(email)
+            console.log(result)
             if(result.length!=0){
+                console.log(password)
                 let passwordMatchStatus = passwordHash.verify(password, result[0].password)
                 if(passwordMatchStatus){
                     return true;
