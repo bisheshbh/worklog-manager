@@ -18,8 +18,7 @@ class DatabaseConnection{
             let [rows, fields] = await (await this.db).execute(sql);
             return rows;
         } catch (error) {
-            console.log(error);
-            return false;
+            throw error;
         }
     }
 }

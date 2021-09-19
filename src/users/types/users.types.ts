@@ -1,4 +1,5 @@
 export type User = {
+    id:number,
     username : string ,
     email : string , 
     password : string,
@@ -8,4 +9,4 @@ export type User = {
     department:number
 };
 
-export type createUser = ({}:User) => Promise<Boolean>;
+export type createUser = ({}:User) => void;

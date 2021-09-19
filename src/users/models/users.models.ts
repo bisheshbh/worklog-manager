@@ -1,12 +1,13 @@
 import {db} from '../../database/config';
-import { createUser } from '../types/users.types';
+import { createUser, User } from '../types/users.types';
 import passwordHash from 'password-hash';
 import { RowDataPacket } from 'mysql2';
+import { usersService } from '../services/users.service';
 
 class UserModel {
     tableName : string = 'user';
 
-    create : createUser  = async ({username , email , password , date_of_birth , address , isAdmin=0, department}) : Promise<boolean>=> {
+    create : createUser  = async ({username , email , password , date_of_birth , address , isAdmin=0, department}) => {
         const hashedPassword = passwordHash.generate(password);
         const sql = 
         `INSERT INTO ${this.tableName} 
@@ -14,27 +15,14 @@ class UserModel {
         address, is_admin, department_id)VALUES("${username}","${email}","${hashedPassword}","${date_of_birth}",
         "${address}",${isAdmin}, ${department})
         `;
-        const result = await db.run(sql);
-        console.log(result)
-        if(!result){
-            return true;
+        try {
+            await db.run(sql);
+        } catch (error) {
+            throw error;
         }
-        return false;
-    }
-
-    checkEmail = async(email:string):Promise<Boolean> => {
-        const sql = `
-        SELECT * FROM ${this.tableName} WHERE email = "${email}"
-        `;
-        const result : any = await db.run(sql);
-        if (result.length != 0){
-            return true;
-        }
-        return false;
     }
 
     findOne = async (email : string):Promise<[]>  => {
-        // TO remove checkEMail 
         const sql = `
         SELECT * FROM ${this.tableName} WHERE email = "${email}"
             `
@@ -66,11 +54,34 @@ class UserModel {
         `
         UPDATE ${this.tableName} set department_id=${department_id}
         `
-        const result : any = db.run(sql)
-        if(result != false){
-            return true
+        try{
+            await db.run(sql);
+        }
+        catch(err){
+            throw err;
         }
         return false
+    }
+
+    updatePassword = async(cookie:string , oldPassword:string, newPassword:string) : Promise<Boolean> => {
+        let hashedPassword:string = ''
+        const sql = 
+        `
+        UPDATE ${this.tableName} SET password=${hashedPassword}
+        `
+        const userId : number = await usersService.getCurrentUserId(cookie);
+        const user : User[] = await this.findOneFromId(userId);
+        const email : string = user[0].email
+        if(await usersService.match(email , oldPassword)){
+            hashedPassword = passwordHash.generate(newPassword)
+            try {
+                await db.run(sql);
+                return true;
+            } catch (error) {
+                throw error;
+            }
+        }
+        return false;
     }
 }
 

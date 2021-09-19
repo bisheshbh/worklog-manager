@@ -5,6 +5,7 @@ import {userModel} from '../models/users.models';
 import {usersService} from "../services/users.service";
 import {departmentModel} from "../../department/models/department.models";
 import { RowDataPacket } from "mysql2";
+import { doesNotMatch } from "node:assert";
 
 class UsersController { 
     
@@ -27,26 +28,40 @@ class UsersController {
     }
 
     updateDepartment : RequestHandler = async(req:express.Request, res:express.Response) => {
-        if(await userModel.updateDept(req.body.department)){
-                return res.redirect('/worklogs/main')
-            }
-        res.render('settings', {errors:[{msg:'Something went wrong.'}],departments:await departmentModel.getDepartmentData()})
+        try {
+            await userModel.updateDept(req.body.department)
+            return res.redirect('/worklogs/main')
+        } catch (err) {
+            res.render('settings', {errors:[{msg:'Something went wrong.'}],departments:await departmentModel.getDepartmentData()})
+            
+        }
+       
+    }
+
+    updatePassword : RequestHandler = async(req:express.Request, res:express.Response) => {
+        const errors = this.checkValidation(req)
+        if(errors){
+            res.render('settings', {errors, departments:await departmentModel.getDepartmentData()})
+        }
+        try {
+            await userModel.updatePassword(req.cookies.sid ,req.body.old_password , req.body.new_password)
+            res.redirect('/worklogs/main')
+
+        } catch (error) {
+            res.render('settings', {errors:[{msg:'Current password didnt match'}], departments:await departmentModel.getDepartmentData()})
+        }
     }
     
     register: RequestHandler = async(req:express.Request ,res:express.Response, next:express.NextFunction)=>{
         let errors = this.checkValidation(req);
         if(errors){
-
             return res.render('register', {errors:errors, departments:await departmentModel.getDepartmentData()});
-
         }
         try{
-            if(await userModel.create(req.body)){
-                res.redirect('/users/login');
-            }
-            res.render('register', {errors:[{'msg':'Something is wrong!', }], departments:await departmentModel.getDepartmentData()});
-        }catch(err){
-            res.render('register', {departments:await departmentModel.getDepartmentData()});
+            await userModel.create(req.body)
+            res.redirect('/users/login');
+        }catch(error){
+            res.render('register', {errors:[{'msg':'Something is wrong!', }], departments:await departmentModel.getDepartmentData()});        
         }
     }
 

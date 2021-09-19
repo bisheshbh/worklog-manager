@@ -3,18 +3,22 @@ import passwordHash from 'password-hash';
 import { stringify } from "querystring";
 import {AES, enc} from 'crypto-js';
 import {userModel} from "../models/users.models";
+import { User } from "../types/users.types";
 
 class UsersService {
 
     match = async(email:string , password:string) => {
-        const result:any = await userModel.findOne(email)
-        if(result != false){
-            let passwordMatchStatus = passwordHash.verify(password, result[0].password)
-            if(passwordMatchStatus){
-                return true;
+        try{
+            const result:any = await userModel.findOne(email)
+            if(result.length!=0){
+                let passwordMatchStatus = passwordHash.verify(password, result[0].password)
+                if(passwordMatchStatus){
+                    return true;
+                }
             }
+        }catch(error){
+            return false;
         }
-        return false;
     }
 
     generateCookie = (email:string):string=>{
@@ -25,9 +29,7 @@ class UsersService {
     decryptCookie = (cookie : string)=>{
         let bytes = AES.decrypt(cookie , "introcept");
         var decryptValue = bytes.toString(enc.Utf8);
-        if(decryptValue){
-            return decryptValue;
-        }
+        return decryptValue
     }
 
     login = (email:string) => {
@@ -37,13 +39,9 @@ class UsersService {
 
     getCurrentUserId = async(cookie:string) => {
         let user = this.decryptCookie(cookie);
-        if(user){
-            const userData : any= await userModel.findOne(user);
-            if(userData.length != 0){
-                let [currentUser] = userData;
-                return currentUser.id;
-            }
-        }
+        const userData: User[] = await userModel.findOne(user);
+        const [currentUser] = userData
+        return currentUser.id
     }
 }
 

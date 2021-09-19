@@ -12,11 +12,12 @@ class WorkLogsModel {
         INSERT INTO ${this.tableName} 
         (task_description , created_date , is_edited, user_id) VALUES ("${task_description}", "${created_date}", ${is_edited}, ${user_id})
         `; 
-        const result = await db.run(sql);
-        if(result!=false){
-            return true;
+        try{
+            await db.run(sql);
+        }catch(error){
+            throw error;
         }
-        return false;
+        return false
     }
 
     getAllUserTask = async(cookie:string) : Promise<[]>=> {
