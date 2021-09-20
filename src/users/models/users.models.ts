@@ -12,7 +12,9 @@ class UserModel {
         const sql = 
         `INSERT INTO ${this.tableName} 
         (username , email , password , date_of_birth, 
-        address, is_admin, department_id)VALUES("${username}","${email}","${hashedPassword}","${date_of_birth}",
+        address, is_admin, department_id)
+        VALUES("${username}","${email}","${hashedPassword}",
+        "${date_of_birth}",
         "${address}",${isAdmin}, ${department})
         `;
         try {
@@ -34,7 +36,9 @@ class UserModel {
     findOneFromId = async (id:number)  => {
         const sql = 
         `
-        SELECT username , email , date_of_birth, address, department_name FROM user INNER JOIN department ON user.department_id=department.id WHERE user.id=${id}
+        SELECT username , email , date_of_birth, address, 
+        department_name FROM user INNER JOIN department 
+        ON user.department_id=department.id WHERE user.id=${id}
         `
         const result:any = await db.run(sql);
         return result;
@@ -42,8 +46,9 @@ class UserModel {
     
     findAll = async () : Promise<Object|[]> =>{
         const sql = `
-        SELECT user.id , username, email, date_of_birth, address, department_name FROM ${this.tableName} INNER JOIN department ON 
-        ${this.tableName}.department_id=department.id
+        SELECT user.id , username, email, date_of_birth, address, 
+        department_name FROM ${this.tableName} INNER JOIN 
+        department ON ${this.tableName}.department_id=department.id
         `;
         const result : any= await db.run(sql);
         return result;
