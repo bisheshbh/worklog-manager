@@ -8,6 +8,7 @@ import { departmentModel } from "../../department/models/department.models";
 import { RowDataPacket } from "mysql2/promise";
 import { Url } from "url";
 import { User } from "../../users/types/users.types";
+import { usersService } from "../../users/services/users.service";
 
 class AdminController{
     today = new Date()
@@ -50,13 +51,14 @@ class AdminController{
     addFeedback : RequestHandler = async(req:express.Request, res:express.Response) => {
         const errors:ValidationError[]|undefined = this.checkValidation(req)
         const taskId:number = +req.params.id;
+        const userId: number = await usersService.getCurrentUserId(req.cookies.sid)
         const [task] = await worklogsModel.getTaskById(taskId);
         const createdDate:string = this.createdDate;
         if(errors){
             return res.render('admin/admin-feedback', {errors , task, createdDate, taskId});
         }
         try {
-            await adminModel.createFeedback(req.body.comment , req.body.created_date , taskId)
+            await adminModel.createFeedback(req.body.comment , req.body.created_date , taskId, userId)
             return res.redirect('/admin/worklogs')
         } catch (error) {
             return res.render('admin/admin-feedback', {errors:[{msg:"Something went wrong!"}] , task, createdDate, taskId});

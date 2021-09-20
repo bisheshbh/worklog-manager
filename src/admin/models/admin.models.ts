@@ -5,10 +5,11 @@ import { User } from '../../users/types/users.types';
 class AdminModel { 
     tableName = 'feedback';
 
-    createFeedback = async(task_description:string, created_date:string, task_id:number)=>{
+    createFeedback = async(task_description:string, created_date:string, task_id:number, user_id:number)=>{
         const sql = 
         `
-        INSERT INTO ${this.tableName} (comment, created_date, task_id) VALUES("${task_description}", "${created_date}", ${task_id})
+        INSERT INTO ${this.tableName} (comment, created_date, task_id, user_id) 
+        VALUES("${task_description}", "${created_date}", ${task_id}, ${user_id})
         `;
         try {
             await db.run(sql);

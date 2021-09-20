@@ -35,7 +35,9 @@ class CreateTable {
             comment VARCHAR(450),
             created_date VARCHAR(25),
             task_id INT,
-            FOREIGN KEY (task_id) REFERENCES task(id)
+            user_id INT,
+            FOREIGN KEY (task_id) REFERENCES task(id),
+            FOREIGN KEY (user_id) REFERENCES user(id)
         )`
     }
 

@@ -51,12 +51,12 @@ class WorkLogsModel {
         const currentUserId = await usersService.getCurrentUserId(cookie);
         const sql = 
         `
-        SELECT task_description, comment, feedback.id, 
+        SELECT username , task_description, comment, feedback.id, 
         feedback.created_date FROM ${this.tableName} 
-        INNER JOIN user
-        ON ${this.tableName}.user_id=user.id INNER JOIN 
-        feedback ON 
-        ${this.tableName}.id=feedback.task_id
+        INNER JOIN feedback
+        ON ${this.tableName}.id=feedback.task_id INNER JOIN 
+        user ON 
+        feedback.user_id=user.id
         WHERE ${this.tableName}.user_id=${currentUserId}`;
         try {
             const result:any = await db.run(sql);
