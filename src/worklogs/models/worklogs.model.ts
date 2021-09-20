@@ -145,9 +145,9 @@ class WorkLogsModel {
         `DELETE FROM ${this.tableName} WHERE id=${task_id}`
 
         try {
-            await this.deleteFeedback(task_id)
             await db.run(sql);
         } catch (error) {
+            console.log(error)
             throw error;
         }
     }

@@ -20,7 +20,7 @@ class CreateTable {
             address VARCHAR(25),
             is_admin BOOLEAN,
             department_id int,
-            FOREIGN KEY (department_id) REFERENCES department(id)
+            FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
         )`
         this.taskTable = `CREATE TABLE IF NOT EXISTS task(
             id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -28,7 +28,7 @@ class CreateTable {
             created_date VARCHAR(25),
             is_edited BOOLEAN,
             user_id int, 
-            FOREIGN KEY (user_id) REFERENCES user(id)
+            FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
         )`
         this.feedbackTable = `CREATE TABLE IF NOT EXISTS feedback(
             id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -36,8 +36,8 @@ class CreateTable {
             created_date VARCHAR(25),
             task_id INT,
             user_id INT,
-            FOREIGN KEY (task_id) REFERENCES task(id),
-            FOREIGN KEY (user_id) REFERENCES user(id)
+            FOREIGN KEY (task_id) REFERENCES task(id) ON DELETE CASCADE,
+            FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
         )`
     }
 
