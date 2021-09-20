@@ -34,7 +34,7 @@ class UsersController {
         const userId:number = await usersService.getCurrentUserId(req.cookies.sid)
         try {
             await userModel.updateDept(req.body.department, req.body.user_id);
-            return res.redirect('/worklogs/main');
+            return res.redirect('/worklogs/main?info='+encodeURIComponent("Department updated successfully!"));
         } catch (err) {
             res.render('settings', {errors:[{msg:'Something went wrong.', userId}],departments:await departmentModel.getDepartmentData()});
         }

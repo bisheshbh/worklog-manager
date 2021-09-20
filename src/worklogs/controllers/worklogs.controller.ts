@@ -22,11 +22,12 @@ class WorklogsController {
 
     getWorklogs : RequestHandler = async(req:express.Request, res:express.Response) => {
         let tasks:object|[] = await worklogsModel.getAllUserTask(req.cookies.sid);
+        let error = req.query.error
         if(req.query.date){
             tasks = await worklogsModel.filterTaskByDate(req.query.date.toString() , req.cookies.sid, true);
-            return res.render('worklogs/allupdates', {tasks});
+            return res.render('worklogs/allupdates', {tasks, error});
         }
-        return res.render('worklogs/allupdates', {tasks});
+        return res.render('worklogs/allupdates', {tasks, error});
     }
     
     getCreateTask : RequestHandler = async (req:express.Request, res:express.Response, next:express.NextFunction) => {
