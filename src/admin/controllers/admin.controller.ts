@@ -1,25 +1,27 @@
 import { RequestHandler } from "express";
 import express from 'express';
 import { worklogsModel } from "../../worklogs/models/worklogs.model";
-import { validationResult } from "express-validator";
+import { Result, ValidationError, validationResult } from "express-validator";
 import { adminModel } from "../models/admin.models";
 import { userModel } from "../../users/models/users.models";
 import { departmentModel } from "../../department/models/department.models";
 import { RowDataPacket } from "mysql2/promise";
+import { Url } from "url";
+import { User } from "../../users/types/users.types";
 
 class AdminController{
     today = new Date()
     createdDate = this.today.getFullYear()+'-'+(this.today.getMonth()+1)+'-'+this.today.getDate();
 
     adminDashboard : RequestHandler = async(req:express.Request, res:express.Response, next:express.NextFunction)=>{
-        const tasks = await worklogsModel.getAllTask();
-        const feedbacks = await adminModel.getAllFeedback();
+        const tasks:object|[] = await worklogsModel.getAllTask();
+        const feedbacks:object|[] = await adminModel.getAllFeedback();
         res.render('admin/admin', {tasks,feedbacks});
     }
 
     adminWorklog : RequestHandler = async(req:express.Request, res:express.Response)=> {
         const info = req.query.info;
-        let tasks = await worklogsModel.getAllTask();
+        let tasks:object|[] = await worklogsModel.getAllTask();
         const departments : RowDataPacket = await departmentModel.getDepartmentData();
         
         if(req.query.date){
@@ -34,22 +36,22 @@ class AdminController{
     }
 
     getUsers : RequestHandler = async(req:express.Request, res:express.Response) =>{
-        const users = await userModel.findAll();
+        const users:object|[] = await userModel.findAll();
         res.render('admin/admin-users', {users});
     }
 
     getAddFeedback : RequestHandler = async(req:express.Request, res:express.Response) =>{
-        const taskId = +req.params.id;
+        const taskId:number = +req.params.id;
         const [task] = await worklogsModel.getTaskById(taskId);
-        const createdDate = this.createdDate;
+        const createdDate:string = this.createdDate;
         res.render('admin/admin-feedback', {task, createdDate, taskId});
     }
 
     addFeedback : RequestHandler = async(req:express.Request, res:express.Response) => {
-        const errors = this.checkValidation(req)
-        const taskId = +req.params.id;
+        const errors:ValidationError[]|undefined = this.checkValidation(req)
+        const taskId:number = +req.params.id;
         const [task] = await worklogsModel.getTaskById(taskId);
-        const createdDate = this.createdDate;
+        const createdDate:string = this.createdDate;
         if(errors){
             return res.render('admin/admin-feedback', {errors , task, createdDate, taskId});
         }
@@ -70,10 +72,10 @@ class AdminController{
     }
 
     updateUser : RequestHandler = async(req:express.Request, res:express.Response) => {
-        const userId = +req.params.id;
+        const userId:number = +req.params.id;
         const info = req.query.info;
         const [user] = await userModel.findOneFromId(userId);
-        const errors = this.checkValidation(req);
+        const errors:ValidationError[]|undefined = this.checkValidation(req);
         if(errors){
             res.render('admin/update-user', {errors , userId, info, user});
         }
@@ -86,7 +88,7 @@ class AdminController{
     }
 
     deleteUpdate : RequestHandler = async(req:express.Request, res:express.Response) => {
-        const taskId = +req.params.id;
+        const taskId:number = +req.params.id;
         try {
             await worklogsModel.deleteTask(taskId);
             return res.redirect('/admin/worklogs?info='+encodeURIComponent("Update deleted successfully"));
@@ -96,8 +98,7 @@ class AdminController{
     }
 
     checkValidation  = (req:express.Request) => {
-        const errors = validationResult(req);
-        console.log(errors);
+        const errors:Result<ValidationError> = validationResult(req);
         if(!errors.isEmpty()){
                 return errors.array();
             }

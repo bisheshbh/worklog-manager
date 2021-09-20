@@ -2,7 +2,7 @@ import { RequestHandler, response, Router } from "express";
 import express from 'express';
 import bodyParser from "body-parser";
 import {usersService} from "../../users/services/users.service";
-import { check, validationResult } from "express-validator";
+import { check, Result, ValidationError, validationResult } from "express-validator";
 import { worklogsModel } from "../models/worklogs.model";
 import { create } from "domain";
 
@@ -12,8 +12,8 @@ class WorklogsController {
 
 
     getMain : RequestHandler = async (req:express.Request, res:express.Response, next:express.NextFunction) => {
-        const tasks = await worklogsModel.getAllUserTask(req.cookies.sid);
-        const feedbacks = await worklogsModel.getAllUserFeedback(req.cookies.sid)
+        const tasks:object|[] = await worklogsModel.getAllUserTask(req.cookies.sid);
+        const feedbacks:object|[] = await worklogsModel.getAllUserFeedback(req.cookies.sid)
         const error = req.query.error
         const info = req.query.info
         return res.render('worklogs/dashboard', {tasks, feedbacks, error, info});
@@ -21,7 +21,7 @@ class WorklogsController {
     }
 
     getWorklogs : RequestHandler = async(req:express.Request, res:express.Response) => {
-        let tasks = await worklogsModel.getAllUserTask(req.cookies.sid);
+        let tasks:object|[] = await worklogsModel.getAllUserTask(req.cookies.sid);
         if(req.query.date){
             tasks = await worklogsModel.filterTaskByDate(req.query.date.toString() , req.cookies.sid, true);
             return res.render('worklogs/allupdates', {tasks});
@@ -30,7 +30,7 @@ class WorklogsController {
     }
     
     getCreateTask : RequestHandler = async (req:express.Request, res:express.Response, next:express.NextFunction) => {
-        const userId = await usersService.getCurrentUserId(req.cookies.sid);
+        const userId:number = await usersService.getCurrentUserId(req.cookies.sid);
         const data = {
             user_id : userId,
             created_date : this.created_date
@@ -39,8 +39,8 @@ class WorklogsController {
     }
 
     createTask : RequestHandler = async(req:express.Request , res:express.Response) => {
-        const errors = this.checkValidation(req);
-        const userId = await usersService.getCurrentUserId(req.cookies.sid);
+        const errors:ValidationError[]|undefined = this.checkValidation(req);
+        const userId:number = await usersService.getCurrentUserId(req.cookies.sid);
         const data = {
             user_id : userId, 
             created_date:this.created_date
@@ -57,7 +57,7 @@ class WorklogsController {
     }
 
     getUpdateTask : RequestHandler = async(req:express.Request, res:express.Response) => {
-        const userId = await usersService.getCurrentUserId(req.cookies.sid);
+        const userId:number = await usersService.getCurrentUserId(req.cookies.sid);
         const [task] = await worklogsModel.getTaskById(+req.params.id);
         if(this.created_date != task.created_date){
             const error  = encodeURIComponent("Access denied . Today's post can only be edited");
@@ -67,8 +67,8 @@ class WorklogsController {
     }
 
     updateTask : RequestHandler = async(req:express.Request, res:express.Response) => {
-        const errors = this.checkValidation(req);
-        const userId = await usersService.getCurrentUserId(req.cookies.sid);
+        const errors:ValidationError[]|undefined = this.checkValidation(req);
+        const userId:number = await usersService.getCurrentUserId(req.cookies.sid);
         const [task] = await worklogsModel.getTaskById(+req.params.id); 
         if(errors){
             return res.render('worklogs/update-worklog', {errors,task, userId});
@@ -82,7 +82,7 @@ class WorklogsController {
     }
 
     checkValidation  = (req:express.Request) => {
-        const errors = validationResult(req);
+        const errors:Result<ValidationError> = validationResult(req);
         if(!errors.isEmpty()){
                 return errors.array();
             }

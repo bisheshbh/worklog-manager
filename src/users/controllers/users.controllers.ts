@@ -1,6 +1,6 @@
 import { RequestHandler, response, Router } from "express";
 import express from 'express';
-import { check, validationResult } from "express-validator";
+import { check, Result, ValidationError, validationResult } from "express-validator";
 import {userModel} from '../models/users.models';
 import {usersService} from "../services/users.service";
 import {departmentModel} from "../../department/models/department.models";
@@ -26,12 +26,12 @@ class UsersController {
     }
 
     getSettings : RequestHandler = async(req:express.Request, res:express.Response) => {
-        const userId = await usersService.getCurrentUserId(req.cookies.sid);
+        const userId:number = await usersService.getCurrentUserId(req.cookies.sid);
         res.render('settings', {departments:await departmentModel.getDepartmentData(), userId});
     }
 
     updateDepartment : RequestHandler = async(req:express.Request, res:express.Response) => {
-        const userId = await usersService.getCurrentUserId(req.cookies.sid)
+        const userId:number = await usersService.getCurrentUserId(req.cookies.sid)
         try {
             await userModel.updateDept(req.body.department, req.body.user_id);
             return res.redirect('/worklogs/main');
@@ -41,8 +41,8 @@ class UsersController {
     }
 
     updatePassword : RequestHandler = async(req:express.Request, res:express.Response) =>{
-        const errors = this.checkValidation(req);
-        const userId = await usersService.getCurrentUserId(req.cookies.sid);
+        const errors:ValidationError[]|undefined = this.checkValidation(req);
+        const userId:number = await usersService.getCurrentUserId(req.cookies.sid);
         if(errors){
             res.render('settings', {passwordErrors:errors, departments:await departmentModel.getDepartmentData(), userId});
         }
@@ -57,7 +57,7 @@ class UsersController {
     }
     
     register: RequestHandler = async(req:express.Request ,res:express.Response, next:express.NextFunction)=>{
-        let errors = this.checkValidation(req);
+        let errors:ValidationError[]|undefined = this.checkValidation(req);
         if(errors){
             return res.render('register', {errors:errors, departments:await departmentModel.getDepartmentData()});
         }
@@ -70,7 +70,7 @@ class UsersController {
     }
 
     login : RequestHandler = async(req:express.Request, res:express.Response , next:express.NextFunction) => {
-        let errors = this.checkValidation(req);
+        let errors:ValidationError[]|undefined = this.checkValidation(req);
         if(errors){
             return res.render('login', {errors:errors});
         }
@@ -87,7 +87,7 @@ class UsersController {
     }
 
     checkValidation = (req:express.Request) => {
-        const errors = validationResult(req);
+        const errors:Result<ValidationError> = validationResult(req);
         if(!errors.isEmpty()){
                 return errors.array();
             }
