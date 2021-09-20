@@ -21,38 +21,38 @@ class UsersController {
     }
 
     getProfile : RequestHandler = async(req:express.Request, res:express.Response) =>{
-        const [userProfile] = await userModel.findOneFromId(await usersService.getCurrentUserId(req.cookies.sid)) 
-        res.render('profile', {userProfile})
+        const [userProfile] = await userModel.findOneFromId(await usersService.getCurrentUserId(req.cookies.sid));
+        res.render('profile', {userProfile});
     }
 
     getSettings : RequestHandler = async(req:express.Request, res:express.Response) => {
-        const userId = await usersService.getCurrentUserId(req.cookies.sid)
-        res.render('settings', {departments:await departmentModel.getDepartmentData(), userId})
+        const userId = await usersService.getCurrentUserId(req.cookies.sid);
+        res.render('settings', {departments:await departmentModel.getDepartmentData(), userId});
     }
 
     updateDepartment : RequestHandler = async(req:express.Request, res:express.Response) => {
         const userId = await usersService.getCurrentUserId(req.cookies.sid)
         try {
-            await userModel.updateDept(req.body.department, req.body.user_id)
-            return res.redirect('/worklogs/main')
+            await userModel.updateDept(req.body.department, req.body.user_id);
+            return res.redirect('/worklogs/main');
         } catch (err) {
-            res.render('settings', {errors:[{msg:'Something went wrong.', userId}],departments:await departmentModel.getDepartmentData()})
+            res.render('settings', {errors:[{msg:'Something went wrong.', userId}],departments:await departmentModel.getDepartmentData()});
         }
     }
 
-    updatePassword : RequestHandler = async(req:express.Request, res:express.Response) => {
-        const errors = this.checkValidation(req)
+    updatePassword : RequestHandler = async(req:express.Request, res:express.Response) =>{
+        const errors = this.checkValidation(req);
+        const userId = await usersService.getCurrentUserId(req.cookies.sid);
         if(errors){
-            res.render('settings', {passwordErrors:errors, departments:await departmentModel.getDepartmentData()})
+            res.render('settings', {passwordErrors:errors, departments:await departmentModel.getDepartmentData(), userId});
         }
         try {
             if(await userModel.updatePassword(req.cookies.sid ,req.body.current_password , req.body.new_password)){
-                res.redirect('/worklogs/main');
+                return res.redirect('/worklogs/main?info='+encodeURIComponent("Password changed successfully."));
             }
-            res.render('settings', {passwordErrors:[{msg:'Current password didnt match'}], departments:await departmentModel.getDepartmentData()});
+            res.render('settings', {passwordErrors:[{msg:'Current password didnt match'}], departments:await departmentModel.getDepartmentData(), userId});
         } catch (error) {
-            console.log(error)
-            res.render('settings', {passwordErrors:[{msg:'Something went wrong'}], departments:await departmentModel.getDepartmentData()});
+            res.render('settings', {passwordErrors:[{msg:'Something went wrong'}], departments:await departmentModel.getDepartmentData(), userId});
         }
     }
     
@@ -62,7 +62,7 @@ class UsersController {
             return res.render('register', {errors:errors, departments:await departmentModel.getDepartmentData()});
         }
         try{
-            await userModel.create(req.body)
+            await userModel.create(req.body);
             res.redirect('/users/login?info='+encodeURIComponent("Success. Please login"));
         }catch(error){
             res.render('register', {errors:[{'msg':'Something is wrong!', }], departments:await departmentModel.getDepartmentData()});        

@@ -23,7 +23,7 @@ export let createUserValidation = [
     body('department')
         .not().isEmpty()
         .withMessage('Department is required')
-]
+];
 
 export let loginUserValidation = [
     body('email')
@@ -34,7 +34,7 @@ export let loginUserValidation = [
     body('password')
         .not().isEmpty()
         .withMessage('Password is required')
-]
+];
 
 export let updatePasswordValidation = [
     body('current_password')
@@ -43,7 +43,7 @@ export let updatePasswordValidation = [
     body('new_password')
         .not().isEmpty()
         .withMessage('New password is empty')
-]
+];
 
 export let updateUserValidation = [
     body('username')
@@ -52,5 +52,5 @@ export let updateUserValidation = [
     body('email_address')
         .not().isEmpty()
         .withMessage("Email address must not be empty")
-]
+];
 

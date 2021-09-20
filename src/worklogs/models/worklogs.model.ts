@@ -60,7 +60,7 @@ class WorkLogsModel {
         WHERE ${this.tableName}.user_id=${currentUserId}`;
         try {
             const result:any = await db.run(sql);
-            return result
+            return result;
         } catch (error) {
             throw error;
         }
@@ -75,7 +75,7 @@ class WorkLogsModel {
         `;
         try {
             const result:any = await db.run(sql)
-            return result
+            return result;
         } catch (error) {
             throw error;
         }
@@ -87,7 +87,7 @@ class WorkLogsModel {
         UPDATE ${this.tableName} SET task_description="${task_description}" WHERE ${this.tableName}.id=${task_id}
         `
         try {
-            await db.run(sql)
+            await db.run(sql);
         } catch (error) {
             throw error;
         }
@@ -97,25 +97,27 @@ class WorkLogsModel {
         const currentUserId = await usersService.getCurrentUserId(cookie);
         const sqlCurrentUser:string = 
         `
-        SELECT * FROM ${this.tableName} WHERE created_date="${date}" AND user_id=${currentUserId}
+        SELECT task.id, task_description , username, created_date FROM ${this.tableName} INNER JOIN
+        user ON ${this.tableName}.user_id=user.id WHERE task.created_date="${date}" AND task.user_id=${currentUserId}
         `
         const sqlAllUser = 
         `
-        SELECT * FROM ${this.tableName} WHERE created_date = "${date}"
+        SELECT task.id, task_description , username, created_date FROM ${this.tableName} INNER JOIN
+        user ON ${this.tableName}.user_id=user.id WHERE task.created_date="${date}"
         `
         const sql = singleUser ? sqlCurrentUser : sqlAllUser;
         try{
             const result : any = db.run(sql)
-            return result
+            return result;
         }catch(error){
-            throw error
+            throw error;
         }
     }
 
     filterTaskByDepartment = async(department_id:number)=>{
         const sql = 
         `
-        SELECT * FROM ${this.tableName} INNER JOIN 
+        SELECT task.id, task_description , username, created_date FROM ${this.tableName} INNER JOIN 
         user ON ${this.tableName}.user_id=user.id
         INNER JOIN department ON user.department_id=department.id
         WHERE department.id=${department_id}
@@ -132,7 +134,7 @@ class WorkLogsModel {
         const sql = 
         `DELETE FROM feedback WHERE task_id=${task_id}`
         try {
-            await db.run(sql)
+            await db.run(sql);
         } catch (error) {
             throw error
         }
@@ -144,7 +146,7 @@ class WorkLogsModel {
 
         try {
             await this.deleteFeedback(task_id)
-            await db.run(sql)
+            await db.run(sql);
         } catch (error) {
             throw error;
         }

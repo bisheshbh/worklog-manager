@@ -12,8 +12,8 @@ class DepartmentModel {
             `;
             try{
                 await db.run(sql);
-            }catch(e){
-                throw e;
+            }catch(error){
+                throw error;
             }
         })
     }

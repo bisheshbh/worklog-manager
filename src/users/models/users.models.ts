@@ -36,8 +36,8 @@ class UserModel {
         `
         SELECT username , email , date_of_birth, address, department_name FROM user INNER JOIN department ON user.department_id=department.id WHERE user.id=${id}
         `
-        const result:any = await db.run(sql)
-        return result
+        const result:any = await db.run(sql);
+        return result;
     }
     
     findAll = async () : Promise<Object|[]> =>{
@@ -61,18 +61,16 @@ class UserModel {
         catch(err){
             throw err;
         }
-        return false
+        return false;
     }
 
     updatePassword = async(cookie:string , oldPassword:string, newPassword:string) : Promise<Boolean> => {
         let hashedPassword:string = ''
         const userId : number = await usersService.getCurrentUserId(cookie);
-        console.log(userId)
         const user : User[] = await this.findOneFromId(userId);
-        const email : string = user[0].email
+        const email : string = user[0].email;
         if(await usersService.match(email , oldPassword)){
-            hashedPassword = passwordHash.generate(newPassword)
-            console.log(hashedPassword)
+            hashedPassword = passwordHash.generate(newPassword);
             const sql = 
             `
             UPDATE ${this.tableName} SET password="${hashedPassword}" WHERE email = "${email}"

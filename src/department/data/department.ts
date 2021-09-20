@@ -15,3 +15,4 @@ export const departments : Department = {
         'Data Support'
     ]
 };
+

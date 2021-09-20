@@ -1,6 +1,7 @@
 import {usersService} from "../../users/services/users.service";
 import express from 'express';
 import {userModel} from "../../users/models/users.models";
+import { RowDataPacket } from "mysql2";
 
 class Auth {
     checkAuth =  (req:express.Request, res:express.Response, next:express.NextFunction)=>{
@@ -21,7 +22,7 @@ class Auth {
             if(cookie.sid){
                 let user = usersService.decryptCookie(cookie.sid);
                 if(typeof user != 'undefined'){
-                    let result:any = await userModel.findOne(user);
+                    let result:RowDataPacket[] = await userModel.findOne(user);
                        if(result.length != 0){
                         let [user] = result;
                         if(user.is_admin){

@@ -49,7 +49,7 @@ class WorklogsController {
             return res.render('worklogs/create-worklog', {errors,data});
         }
         try {
-            await worklogsModel.create(req.body.task_description, req.body.created_date, req.body.user_id)
+            await worklogsModel.create(req.body.task_description, req.body.created_date, req.body.user_id);
             return res.redirect('/worklogs/main?info='+encodeURIComponent("Task created successfully"));
         } catch (error) {
             return res.render('worklogs/create-worklog', {errors:[{msg:'Something is wrong !'}], data});
@@ -60,10 +60,10 @@ class WorklogsController {
         const userId = await usersService.getCurrentUserId(req.cookies.sid);
         const [task] = await worklogsModel.getTaskById(+req.params.id);
         if(this.created_date != task.created_date){
-            const error  = encodeURIComponent("Access denied . Today's post can only be edited")
-            return res.redirect("/worklogs/allupdates?error="+error)
+            const error  = encodeURIComponent("Access denied . Today's post can only be edited");
+            return res.redirect("/worklogs/allupdates?error="+error);
         }
-        return res.render('worklogs/update-worklog', {task, userId})
+        return res.render('worklogs/update-worklog', {task, userId});
     }
 
     updateTask : RequestHandler = async(req:express.Request, res:express.Response) => {
@@ -74,7 +74,7 @@ class WorklogsController {
             return res.render('worklogs/update-worklog', {errors,task, userId});
         }
         try {
-            await worklogsModel.updateTask(req.body.task_description, req.body.created_date, task.id)
+            await worklogsModel.updateTask(req.body.task_description, req.body.created_date, task.id);
             return res.redirect('/worklogs/main?info='+encodeURIComponent("Task updated successfully"));
         } catch (error) {
             return res.render('worklogs/update-worklog', {errors:[{msg:'Something is wrong !'}], task, userId});

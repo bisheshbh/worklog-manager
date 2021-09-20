@@ -1,5 +1,6 @@
 import { RowDataPacket } from 'mysql2';
 import {db} from '../../database/config';
+import { User } from '../../users/types/users.types';
 
 class AdminModel { 
     tableName = 'feedback';
@@ -19,11 +20,13 @@ class AdminModel {
     getAllFeedback = async() : Promise<[]>=> {
         const sql = 
         `
-        SELECT comment , feedback.created_date, task_description FROM feedback INNER JOIN task ON feedback.task_id=task.id
+        SELECT comment , feedback.created_date, 
+        task_description FROM feedback INNER JOIN 
+        task ON feedback.task_id=task.id
         `;
-        const result : any = await db.run(sql)
+        const result : any = await db.run(sql);
         return result;
     }
 }
 
-export let adminModel = new AdminModel()
+export let adminModel = new AdminModel();

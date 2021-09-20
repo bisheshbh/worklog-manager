@@ -11,4 +11,4 @@ worklogsRouter.get('/create', auth.checkAuth, worklogsController.getCreateTask);
 worklogsRouter.post('/create',  auth.checkAuth, createTaskValidation, worklogsController.createTask);
 worklogsRouter.get('/update/:id', auth.checkAuth, worklogsController.getUpdateTask);
 worklogsRouter.post('/update/:id', auth.checkAuth, createTaskValidation ,worklogsController.updateTask);
-worklogsRouter.get('/allupdates', auth.checkAuth, worklogsController.getWorklogs)
+worklogsRouter.get('/allupdates', auth.checkAuth, worklogsController.getWorklogs);
