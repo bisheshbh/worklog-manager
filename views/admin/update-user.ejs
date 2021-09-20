@@ -1,0 +1,80 @@
+<%- include('../headers') -%>
+
+<nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Worklog Manager Admin Portal</a>
+    <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/admin">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/users">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/worklogs">Worklogs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/users/logout">Logout</a>
+        </li>
+       
+      </ul>
+    </div>
+  </nav>
+  
+  <section class="h-100 h-custom" style="background-color: #8fc4b7;">
+    <% if(typeof info != 'undefined') { %>
+        <div class="alert alert-success" role="alert">
+            <%= info %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+      <% } %>
+      <% if(typeof errors != 'undefined') { %>
+        <% errors.forEach(function(error) { %>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <%= error.msg %>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+        <% }) %>
+    <% } %>
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-lg-8 col-xl-6">
+          <div class="card rounded-3">
+            <div class="card-body p-4 p-md-5">
+              <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 px-md-2">Update user</h3>
+  
+              <form action="/admin/update-user/<%=userId %>" method="POST" class="px-md-2">
+  
+                <div class="form-outline mb-4">
+                  <input type="text" id="username" class="form-control" name="username" value="<%= user.username %>"/>
+                  <label class="form-label" for="username">Username</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input type="email" id="email" class="form-control" name="email_address" value="<%= user.email %>"/>
+                  <label class="form-label" for="email">Email</label>
+                </div>
+
+                
+  
+                <button type="submit" class="btn btn-success btn-lg mb-1">Submit</button>
+  
+              </form>
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <%- include('../footers') -%>

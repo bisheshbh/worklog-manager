@@ -18,9 +18,6 @@
           <a class="nav-link" href="/admin/worklogs">Worklogs</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Settings</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="/users/logout">Logout</a>
         </li>
        
@@ -52,7 +49,7 @@
                   <strong class="d-block text-gray-dark"><%= user.address %></strong>
                   <strong class="d-block text-gray-dark"><%= user.department_name %></strong>
 
-                  <a href="#">Edit</a>
+                  <a href="/admin/update-user/<%=user.id%>">Edit</a>
               </div>
              
             </div>

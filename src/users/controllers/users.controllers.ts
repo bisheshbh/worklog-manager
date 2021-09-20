@@ -6,6 +6,7 @@ import {usersService} from "../services/users.service";
 import {departmentModel} from "../../department/models/department.models";
 import { RowDataPacket } from "mysql2";
 import { doesNotMatch } from "node:assert";
+import { encode } from "punycode";
 
 class UsersController { 
     
@@ -25,18 +26,18 @@ class UsersController {
     }
 
     getSettings : RequestHandler = async(req:express.Request, res:express.Response) => {
-        res.render('settings', {departments:await departmentModel.getDepartmentData()})
+        const userId = await usersService.getCurrentUserId(req.cookies.sid)
+        res.render('settings', {departments:await departmentModel.getDepartmentData(), userId})
     }
 
     updateDepartment : RequestHandler = async(req:express.Request, res:express.Response) => {
+        const userId = await usersService.getCurrentUserId(req.cookies.sid)
         try {
-            await userModel.updateDept(req.body.department)
+            await userModel.updateDept(req.body.department, req.body.user_id)
             return res.redirect('/worklogs/main')
         } catch (err) {
-            res.render('settings', {errors:[{msg:'Something went wrong.'}],departments:await departmentModel.getDepartmentData()})
-            
+            res.render('settings', {errors:[{msg:'Something went wrong.', userId}],departments:await departmentModel.getDepartmentData()})
         }
-       
     }
 
     updatePassword : RequestHandler = async(req:express.Request, res:express.Response) => {
@@ -94,7 +95,7 @@ class UsersController {
 
     logout : RequestHandler = (req : express.Request, res:express.Response) => {
         res.clearCookie('sid');
-        res.redirect('/users/login');
+        res.redirect('/users/login?info='+encodeURIComponent("You have been logged out"));
     }
 }
 

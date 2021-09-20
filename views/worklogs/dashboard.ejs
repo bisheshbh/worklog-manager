@@ -86,11 +86,11 @@
           <% tasks.forEach(function(task) { %>
             <div class="media text-muted pt-3">
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-        
                 <h4 class="d-block"> <%= task.task_description %></h4>
+                <span class="d-block"> <%= task.created_date %></span>
               </div>
-             </div>
-             <% }) %>
+            </div>
+          <% }) %>
           <small class="d-block text-right mt-3">
             <a href="/worklogs/allupdates">All updates</a>
           </small>

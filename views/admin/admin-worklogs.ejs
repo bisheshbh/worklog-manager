@@ -18,13 +18,24 @@
           <a class="nav-link" href="/admin/worklogs">Worklogs</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Settings</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="/users/logout">Logout</a>
         </li>
        
       </ul>
+      <form class="form-inline my-2 my-lg-0">
+      <select class="form-control mr-sm-2" name="department" id="department">
+      <% departments.forEach(function(department) { %>
+            <option value="<%=department.id %>" name="department" id="department">
+              <%= department.department_name %>
+            </option>
+      <% }) %>
+        </select>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+      <form class="form-inline my-2 my-lg-0">
+        <input name="date" class="form-control mr-sm-2" type="date" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
     </div>
   </nav>
 
@@ -48,7 +59,9 @@
               <div class="d-flex justify-content-between align-items-center w-100">
                   <strong class="d-block text-gray-dark"><%= task.created_date %></strong>
                   <a href="/admin/feedback/<%= task.id %>">Add feedback</a>
-              </div>
+                  <a href="/admin/delete/<%= task.id %>">Delete</a>
+                </div>
+              
               <h4 class="d-block"> <%= task.task_description %></h4>
               <strong class="d-block"> By <%= task.username %></strong>
             </div>

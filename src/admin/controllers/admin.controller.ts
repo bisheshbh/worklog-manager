@@ -4,6 +4,8 @@ import { worklogsModel } from "../../worklogs/models/worklogs.model";
 import { validationResult } from "express-validator";
 import { adminModel } from "../models/admin.models";
 import { userModel } from "../../users/models/users.models";
+import { departmentModel } from "../../department/models/department.models";
+import { RowDataPacket } from "mysql2/promise";
 
 class AdminController{
     today = new Date()
@@ -16,8 +18,18 @@ class AdminController{
     }
 
     adminWorklog : RequestHandler = async(req:express.Request, res:express.Response)=> {
-        const tasks = await worklogsModel.getAllTask();
-        res.render('admin/admin-worklogs', {tasks})
+        let tasks = await worklogsModel.getAllTask();
+        const departments : RowDataPacket = await departmentModel.getDepartmentData();
+        
+        if(req.query.date){
+            tasks = await worklogsModel.filterTaskByDate(req.query.date.toString(),req.cookies.sid , false)
+            return res.render('admin/admin-worklogs', {tasks, departments})
+        }
+        if(req.query.department){
+            tasks = await worklogsModel.filterTaskByDepartment(+req.query.department)
+            return res.render('admin/admin-worklogs', {tasks, departments})
+        }
+        res.render('admin/admin-worklogs', {tasks, departments})
     }
 
     getUsers : RequestHandler = async(req:express.Request, res:express.Response) =>{
@@ -47,6 +59,41 @@ class AdminController{
             return res.render('admin/admin-feedback', {errors:[{msg:"Something went wrong!"}] , task, createdDate, taskId});
         }
          
+    }
+
+    getUpdateUser : RequestHandler = async(req:express.Request, res:express.Response) => {
+        const userId = +req.params.id;
+        const info = req.query.info;
+        const [user] = await userModel.findOneFromId(userId)
+        return res.render('admin/update-user', {userId, user, info})
+    }
+
+    updateUser : RequestHandler = async(req:express.Request, res:express.Response) => {
+        const userId = +req.params.id;
+        const info = req.query.info;
+        const [user] = await userModel.findOneFromId(userId)
+
+        const errors = this.checkValidation(req)
+        if(errors){
+            res.render('admin/update-user', {errors , userId, info, user})
+        }
+        try {
+            await userModel.updateUser(userId, req.body.username , req.body.email_address)
+            return res.redirect('/admin/update-user/'+userId+'?info='+encodeURIComponent("User updated successfully"))
+        } catch (error) {
+            return res.render('admin/update-user', {errors:[{msg:'Something is wrong!'}], userId, info, user})
+        }
+    }
+
+    deleteUpdate : RequestHandler = async(req:express.Request, res:express.Response) => {
+        const taskId = +req.params.id;
+        try {
+            await worklogsModel.deleteTask(taskId)
+            return res.redirect('/admin/worklogs?info='+encodeURIComponent("Update deleted successfully"))
+        } catch (error) {
+            console.log(error)
+            return res.redirect('/admin/worklogs')
+        }
     }
 
     checkValidation  = (req:express.Request) => {

@@ -49,10 +49,11 @@ class UserModel {
         return result;
     }
 
-    updateDept = async(department_id:number) : Promise<Boolean> => {
+    updateDept = async(department_id:number , user_id:number) : Promise<Boolean> => {
         const sql = 
         `
         UPDATE ${this.tableName} set department_id=${department_id}
+        WHERE id=${user_id}
         `
         try{
             await db.run(sql);
@@ -84,6 +85,17 @@ class UserModel {
             }
         }
         return false;
+    }
+
+    updateUser = async(user_id:number, username:string , email:string) => {
+        const sql = 
+        `UPDATE ${this.tableName} SET username="${username}",
+        email="${email}" WHERE id=${user_id}`
+        try {
+            await db.run(sql);
+        } catch (error) {
+            throw error;
+        }
     }
 }
 

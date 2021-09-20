@@ -45,3 +45,12 @@ export let updatePasswordValidation = [
         .withMessage('New password is empty')
 ]
 
+export let updateUserValidation = [
+    body('username')
+        .not().isEmpty()
+        .withMessage('Username must not be empty'),
+    body('email_address')
+        .not().isEmpty()
+        .withMessage("Email address must not be empty")
+]
+

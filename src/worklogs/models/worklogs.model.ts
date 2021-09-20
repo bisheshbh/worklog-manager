@@ -110,8 +110,44 @@ class WorkLogsModel {
         }catch(error){
             throw error
         }
+    }
 
+    filterTaskByDepartment = async(department_id:number)=>{
+        const sql = 
+        `
+        SELECT * FROM ${this.tableName} INNER JOIN 
+        user ON ${this.tableName}.user_id=user.id
+        INNER JOIN department ON user.department_id=department.id
+        WHERE department.id=${department_id}
+        `
+        try{
+            const result : any = db.run(sql);
+            return result;
+        }catch(error){
+            throw error;
+        }
+    }
 
+    deleteFeedback = async(task_id:number) => {
+        const sql = 
+        `DELETE FROM feedback WHERE task_id=${task_id}`
+        try {
+            await db.run(sql)
+        } catch (error) {
+            throw error
+        }
+    }
+
+    deleteTask = async(task_id:number) => {
+        const sql = 
+        `DELETE FROM ${this.tableName} WHERE id=${task_id}`
+
+        try {
+            await this.deleteFeedback(task_id)
+            await db.run(sql)
+        } catch (error) {
+            throw error;
+        }
     }
 }
 
