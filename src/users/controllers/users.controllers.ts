@@ -21,7 +21,7 @@ class UsersController {
     }
 
     getProfile : RequestHandler = async(req:express.Request, res:express.Response) =>{
-        const [userProfile] = await userModel.findOneFromId(await usersService.getCurrentUserId(req.cookies.sid));
+        const [userProfile] = await userModel.getOneFromId(await usersService.getCurrentUserId(req.cookies.sid));
         res.render('profile', {userProfile});
     }
 

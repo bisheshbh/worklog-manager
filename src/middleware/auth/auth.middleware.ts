@@ -22,7 +22,7 @@ class Auth {
             if(cookie.sid){
                 let user = usersService.decryptCookie(cookie.sid);
                 if(typeof user != 'undefined'){
-                    let result:RowDataPacket[] = await userModel.findOne(user);
+                    let result:RowDataPacket[] = await userModel.getOne(user);
                        if(result.length != 0){
                         let [user] = result;
                         if(user.is_admin){

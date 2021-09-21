@@ -38,7 +38,7 @@ class AdminController{
     }
 
     getUsers : RequestHandler = async(req:express.Request, res:express.Response) =>{
-        const users:object|[] = await userModel.findAll();
+        const users:object|[] = await userModel.getAll();
         const info = req.query.info
         res.render('admin/admin-users', {users, info});
     }
@@ -71,14 +71,14 @@ class AdminController{
     getUpdateUser : RequestHandler = async(req:express.Request, res:express.Response) => {
         const userId = +req.params.id;
         const info = req.query.info;
-        const [user] = await userModel.findOneFromId(userId);
+        const [user] = await userModel.getOneFromId(userId);
         return res.render('admin/update-user', {userId, user, info})
     }
 
     updateUser : RequestHandler = async(req:express.Request, res:express.Response) => {
         const userId:number = +req.params.id;
         const info = req.query.info;
-        const [user] = await userModel.findOneFromId(userId);
+        const [user] = await userModel.getOneFromId(userId);
         const errors:ValidationError[]|undefined = this.checkValidation(req);
         if(errors){
             res.render('admin/update-user', {errors , userId, info, user});

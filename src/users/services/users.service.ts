@@ -9,7 +9,7 @@ class UsersService {
 
     match = async(email:string , password:string) => {
         try{
-            const result:any = await userModel.findOne(email);
+            const result:any = await userModel.getOne(email);
             if(result.length!=0){
                 let passwordMatchStatus = passwordHash.verify(password, result[0].password);
                 if(passwordMatchStatus){
@@ -39,7 +39,7 @@ class UsersService {
 
     getCurrentUserId = async(cookie:string) => {
         let user = this.decryptCookie(cookie);
-        const userData: User[] = await userModel.findOne(user);
+        const userData: User[] = await userModel.getOne(user);
         const [currentUser] = userData;
         return currentUser.id;
     }

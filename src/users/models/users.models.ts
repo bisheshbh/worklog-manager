@@ -24,7 +24,7 @@ class UserModel {
         }
     }
 
-    findOne = async (email : string):Promise<[]>  => {
+    getOne = async (email : string):Promise<[]>  => {
         const sql = `
         SELECT * FROM ${this.tableName} WHERE email = "${email}"
             `
@@ -33,7 +33,7 @@ class UserModel {
         
     }
 
-    findOneFromId = async (id:number)  => {
+    getOneFromId = async (id:number)  => {
         const sql = 
         `
         SELECT username , email , date_of_birth, address, 
@@ -44,7 +44,7 @@ class UserModel {
         return result;
     }
     
-    findAll = async () : Promise<Object|[]> =>{
+    getAll = async () : Promise<Object|[]> =>{
         const sql = `
         SELECT user.id , username, email, date_of_birth, address, 
         department_name FROM ${this.tableName} INNER JOIN 
@@ -72,7 +72,7 @@ class UserModel {
     updatePassword = async(cookie:string , oldPassword:string, newPassword:string) : Promise<Boolean> => {
         let hashedPassword:string = ''
         const userId : number = await usersService.getCurrentUserId(cookie);
-        const user : User[] = await this.findOneFromId(userId);
+        const user : User[] = await this.getOneFromId(userId);
         const email : string = user[0].email;
         if(await usersService.match(email , oldPassword)){
             hashedPassword = passwordHash.generate(newPassword);
