@@ -9,6 +9,9 @@
     <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
+          <a class="nav-link" href="/worklogs/main">Main</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="/admin">Dashboard</a>
         </li>
         <li class="nav-item">
@@ -62,9 +65,12 @@
                   <input type="email" id="email" class="form-control" name="email_address" value="<%= user.email %>"/>
                   <label class="form-label" for="email">Email</label>
                 </div>
-
-                
-  
+                <% if (user.is_admin === 0) { %> 
+                <div class="form-outline mb-4">
+                  <input type="checkbox" id="email" class="form-control" name="admin" value="1"/>
+                  <label class="form-label" for="email">Make admin</label>
+                </div>
+                <% } %>
                 <button type="submit" class="btn btn-success btn-lg mb-1">Submit</button>
   
               </form>

@@ -14,7 +14,7 @@ class DatabaseConnection{
     
     run = async (sql:string) => {
         try {
-            let [rows, fields] = await (await this.db).execute(sql);
+            let [rows, _fields] = await (await this.db).execute(sql);
             return rows;
         } catch (error) {
             throw error;

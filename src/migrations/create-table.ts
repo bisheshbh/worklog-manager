@@ -16,7 +16,7 @@ class CreateTable {
             username VARCHAR(25),
             email VARCHAR(150),
             password VARCHAR(100),
-            date_of_birth VARCHAR(25),
+            date_of_birth DATE,
             address VARCHAR(25),
             is_admin BOOLEAN,
             department_id int,
@@ -25,7 +25,7 @@ class CreateTable {
         this.taskTable = `CREATE TABLE IF NOT EXISTS task(
             id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
             task_description VARCHAR(2000),
-            created_date VARCHAR(25),
+            created_date DATE,
             is_edited BOOLEAN,
             user_id int, 
             FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
@@ -33,7 +33,7 @@ class CreateTable {
         this.feedbackTable = `CREATE TABLE IF NOT EXISTS feedback(
             id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
             comment VARCHAR(450),
-            created_date VARCHAR(25),
+            created_date DATE,
             task_id INT,
             user_id INT,
             FOREIGN KEY (task_id) REFERENCES task(id) ON DELETE CASCADE,

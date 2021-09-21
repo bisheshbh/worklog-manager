@@ -37,7 +37,7 @@ class UserModel {
         const sql = 
         `
         SELECT username , email , date_of_birth, address, 
-        department_name FROM user INNER JOIN department 
+        department_name, is_admin FROM user INNER JOIN department 
         ON user.department_id=department.id WHERE user.id=${id}
         `
         const result:any = await db.run(sql);
@@ -90,10 +90,10 @@ class UserModel {
         return false;
     }
 
-    updateUser = async(user_id:number, username:string , email:string) => {
+    updateUser = async(user_id:number, username:string , email:string, admin:number) => {
         const sql = 
         `UPDATE ${this.tableName} SET username="${username}",
-        email="${email}" WHERE id=${user_id}`
+        email="${email}", is_admin=${admin} WHERE id=${user_id}`
         try {
             await db.run(sql);
         } catch (error) {

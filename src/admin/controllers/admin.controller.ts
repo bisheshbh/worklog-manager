@@ -17,13 +17,14 @@ class AdminController{
     adminDashboard : RequestHandler = async(req:express.Request, res:express.Response, next:express.NextFunction)=>{
         const tasks:object|[] = await worklogsModel.getAllTask();
         const feedbacks:object|[] = await adminModel.getAllFeedback();
-        res.render('admin/admin', {tasks,feedbacks});
+        const info = req.query.info;
+        res.render('admin/admin', {tasks,feedbacks, info});
     }
 
     adminWorklog : RequestHandler = async(req:express.Request, res:express.Response)=> {
         const info = req.query.info;
         let tasks:object|[] = await worklogsModel.getAllTask();
-        const departments : RowDataPacket = await departmentModel.getDepartmentData();
+        const departments : any = await departmentModel.getDepartmentData();
         
         if(req.query.date){
             tasks = await worklogsModel.filterTaskByDate(req.query.date.toString(),req.cookies.sid , false);
@@ -38,7 +39,8 @@ class AdminController{
 
     getUsers : RequestHandler = async(req:express.Request, res:express.Response) =>{
         const users:object|[] = await userModel.findAll();
-        res.render('admin/admin-users', {users});
+        const info = req.query.info
+        res.render('admin/admin-users', {users, info});
     }
 
     getAddFeedback : RequestHandler = async(req:express.Request, res:express.Response) =>{
@@ -51,15 +53,15 @@ class AdminController{
     addFeedback : RequestHandler = async(req:express.Request, res:express.Response) => {
         const errors:ValidationError[]|undefined = this.checkValidation(req)
         const taskId:number = +req.params.id;
-        const userId: number = await usersService.getCurrentUserId(req.cookies.sid)
+        const userId: number = await usersService.getCurrentUserId(req.cookies.sid);
         const [task] = await worklogsModel.getTaskById(taskId);
         const createdDate:string = this.createdDate;
         if(errors){
             return res.render('admin/admin-feedback', {errors , task, createdDate, taskId});
         }
         try {
-            await adminModel.createFeedback(req.body.comment , req.body.created_date , taskId, userId)
-            return res.redirect('/admin/worklogs')
+            await adminModel.createFeedback(req.body.comment , req.body.created_date , taskId, userId);
+            return res.redirect('/admin/worklogs');
         } catch (error) {
             return res.render('admin/admin-feedback', {errors:[{msg:"Something went wrong!"}] , task, createdDate, taskId});
         }
@@ -69,7 +71,7 @@ class AdminController{
     getUpdateUser : RequestHandler = async(req:express.Request, res:express.Response) => {
         const userId = +req.params.id;
         const info = req.query.info;
-        const [user] = await userModel.findOneFromId(userId)
+        const [user] = await userModel.findOneFromId(userId);
         return res.render('admin/update-user', {userId, user, info})
     }
 
@@ -82,8 +84,12 @@ class AdminController{
             res.render('admin/update-user', {errors , userId, info, user});
         }
         try {
-            await userModel.updateUser(userId, req.body.username , req.body.email_address)
-            return res.redirect('/admin/update-user/'+userId+'?info='+encodeURIComponent("User updated successfully"));
+            if(req.body.admin){
+                await userModel.updateUser(userId, req.body.username , req.body.email_address, +req.body.admin);
+                return res.redirect('/admin/users/?info='+encodeURIComponent("User updated successfully"));
+            }
+            await userModel.updateUser(userId, req.body.username , req.body.email_address, 1);
+            return res.redirect('/admin/users/?info='+encodeURIComponent("User updated successfully"));
         } catch (error) {
             return res.render('admin/update-user', {errors:[{msg:'Something is wrong!'}], userId, info, user});
         }
