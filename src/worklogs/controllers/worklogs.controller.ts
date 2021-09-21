@@ -5,11 +5,17 @@ import {usersService} from "../../users/services/users.service";
 import { check, Result, ValidationError, validationResult } from "express-validator";
 import { worklogsModel } from "../models/worklogs.model";
 import { create } from "domain";
+import { parse } from "dotenv";
 
 class WorklogsController {
     today = new Date()
+    tzoffset = this.today.getTimezoneOffset() * 60000;
     created_date = this.today.getFullYear()+'-'+"0"+(this.today.getMonth()+1)+'-'+this.today.getDate();
 
+    parseDate = (date:any)=>{
+        const parsedDate = new Date(date-this.tzoffset).toISOString().split('T')[0]
+        return parsedDate
+    }
 
     getMain : RequestHandler = async (req:express.Request, res:express.Response, next:express.NextFunction) => {
         const tasks:object|[] = await worklogsModel.getAllUserTask(req.cookies.sid);
@@ -24,7 +30,7 @@ class WorklogsController {
         let tasks:object|[] = await worklogsModel.getAllUserTask(req.cookies.sid);
         let error = req.query.error
         if(req.query.date){
-            tasks = await worklogsModel.filterTaskByDate(req.query.date.toString() , req.cookies.sid, true);
+            tasks = await worklogsModel.filterTaskByDate(req.query.date.toLocaleString().split(',')[0] , req.cookies.sid, true);
             return res.render('worklogs/allupdates', {tasks, error});
         }
         return res.render('worklogs/allupdates', {tasks, error});
@@ -53,6 +59,7 @@ class WorklogsController {
             await worklogsModel.create(req.body.task_description, req.body.created_date, req.body.user_id);
             return res.redirect('/worklogs/main?info='+encodeURIComponent("Task created successfully"));
         } catch (error) {
+            console.log(error)
             return res.render('worklogs/create-worklog', {errors:[{msg:'Something is wrong !'}], data});
         }
     }
@@ -60,7 +67,7 @@ class WorklogsController {
     getUpdateTask : RequestHandler = async(req:express.Request, res:express.Response) => {
         const userId:number = await usersService.getCurrentUserId(req.cookies.sid);
         const [task] = await worklogsModel.getTaskById(+req.params.id);
-        if(this.created_date != task.created_date){
+        if(this.created_date != this.parseDate(task.created_date)){
             const error  = encodeURIComponent("Access denied . Today's post can only be edited");
             return res.redirect("/worklogs/allupdates?error="+error);
         }

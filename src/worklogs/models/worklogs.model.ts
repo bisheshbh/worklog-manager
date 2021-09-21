@@ -147,7 +147,6 @@ class WorkLogsModel {
         try {
             await db.run(sql);
         } catch (error) {
-            console.log(error)
             throw error;
         }
     }
