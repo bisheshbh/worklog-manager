@@ -84,13 +84,18 @@ class AdminController{
             res.render('admin/update-user', {errors , userId, info, user});
         }
         try {
+            if(user.is_admin ===1){
+                await userModel.updateUser(userId, req.body.username , req.body.email_address, 1);
+                return res.redirect('/admin/users/?info='+encodeURIComponent("User updated successfully"));
+            }
             if(req.body.admin){
                 await userModel.updateUser(userId, req.body.username , req.body.email_address, +req.body.admin);
                 return res.redirect('/admin/users/?info='+encodeURIComponent("User updated successfully"));
             }
-            await userModel.updateUser(userId, req.body.username , req.body.email_address, 1);
+            await userModel.updateUser(userId, req.body.username , req.body.email_address, 0);
             return res.redirect('/admin/users/?info='+encodeURIComponent("User updated successfully"));
         } catch (error) {
+            console.log(error)
             return res.render('admin/update-user', {errors:[{msg:'Something is wrong!'}], userId, info, user});
         }
     }
