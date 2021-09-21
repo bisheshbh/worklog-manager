@@ -40,7 +40,7 @@ class UserModel {
         department_name, is_admin FROM user INNER JOIN department 
         ON user.department_id=department.id WHERE user.id=${id}
         `
-        const result:any = await db.run(sql);
+        const result: any = await db.run(sql);
         return result;
     }
     
@@ -50,7 +50,7 @@ class UserModel {
         department_name FROM ${this.tableName} INNER JOIN 
         department ON ${this.tableName}.department_id=department.id
         `;
-        const result : any= await db.run(sql);
+        const result : object|[]= await db.run(sql);
         return result;
     }
 

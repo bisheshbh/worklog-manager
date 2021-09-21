@@ -61,7 +61,7 @@ class AdminController{
         }
         try {
             await adminModel.createFeedback(req.body.comment , req.body.created_date , taskId, userId);
-            return res.redirect('/admin/worklogs');
+            return res.redirect('/admin/worklogs?info='+encodeURIComponent('Feedback added successfully!'));
         } catch (error) {
             return res.render('admin/admin-feedback', {errors:[{msg:"Something went wrong!"}] , task, createdDate, taskId});
         }
