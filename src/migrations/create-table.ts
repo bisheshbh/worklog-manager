@@ -1,4 +1,5 @@
 import {db} from '../database/config';
+import { departmentModel } from '../department/models/department.models';
 
 class CreateTable {
     userTable: string;
@@ -19,7 +20,7 @@ class CreateTable {
             address VARCHAR(25),
             is_admin BOOLEAN,
             department_id int,
-            FOREIGN KEY (department_id) REFERENCES department(id)
+            FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
         )`
         this.taskTable = `CREATE TABLE IF NOT EXISTS task(
             id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -27,24 +28,32 @@ class CreateTable {
             created_date DATE,
             is_edited BOOLEAN,
             user_id int, 
-            FOREIGN KEY (user_id) REFERENCES user(id)
+            FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
         )`
         this.feedbackTable = `CREATE TABLE IF NOT EXISTS feedback(
             id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
             comment VARCHAR(450),
             created_date DATE,
-            updated_date DATE,
             task_id INT,
-            FOREIGN KEY (task_id) REFERENCES task(id)
+            user_id INT,
+            FOREIGN KEY (task_id) REFERENCES task(id) ON DELETE CASCADE,
+            FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
         )`
     }
 
     async createTable(){
-        await db.run(this.departmentTable);
-        await db.run(this.userTable);
-        await db.run(this.taskTable);
-        await db.run(this.feedbackTable);
+        try {
+            await db.run(this.departmentTable);
+            await db.run(this.userTable);
+            await db.run(this.taskTable);
+            await db.run(this.feedbackTable);
+            return true;
+        } catch (error) {
+            throw error;
+        }
     }
 }
+
 export let createTable = new CreateTable();
 createTable.createTable()
+departmentModel.insertData()

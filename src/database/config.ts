@@ -1,5 +1,4 @@
 require('dotenv').config();
-import { MysqlError } from 'mysql';
 import mysql from 'mysql2/promise';
 
 class DatabaseConnection{
@@ -15,14 +14,14 @@ class DatabaseConnection{
     
     run = async (sql:string) => {
         try {
-            let [rows, fields] = await (await this.db).execute(sql);
+            let [rows, _fields] = await (await this.db).execute(sql);
             return rows;
         } catch (error) {
-            console.log(error);
-            return false;
+            throw error;
         }
     }
 }
 
 export let db = new DatabaseConnection();
+
 

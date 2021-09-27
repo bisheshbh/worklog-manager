@@ -11,7 +11,7 @@ export const departments : Department = {
         'Support',
         'Customer Success', 
         'Project Management',
-        'Product Management',
         'Data Support'
     ]
 };
+

@@ -29,6 +29,10 @@
           </li>
          
         </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input name="date" class="form-control mr-sm-2" type="date" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
       </div>
     </nav>
 
@@ -37,59 +41,37 @@
     <main role="main" class="container">
       <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
         <div class="lh-100">
-          
+          <h6 class="mb-0 text-white lh-100"></h6>
+          <small></small>
         </div>
       </div>
       <br>
       <br>
 
-
-    <% if(typeof info != 'undefined') { %>
-      <div class="alert alert-success" role="alert">
-          <%= info %>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
+      <% if(typeof error != 'undefined') { %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <%= error %>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
 <% } %>
-      
 
       <div class="my-3 p-3 bg-white rounded box-shadow">
-        <h6 class="border-bottom border-gray pb-2 mb-0">Feedbacks</h6>
-        <% if(typeof feedbacks != 'undefined') { %>
-          <% feedbacks.forEach(function(feedback) { %>
-            <div class="media text-muted pt-3">
-              <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                <div class="d-flex justify-content-between align-items-center w-100">
-                    <h4 class="d-block text-gray-dark"><%= feedback.comment %></h4>
-                    <a href="#"><%= feedback.created_date %></a>
-                </div>
-                <span class="d-block"> <%= feedback.task_description %></span>
-                <span style="font-style: italic;" class="d-block"> Commented By <%= feedback.username %></span>
-
-              </div>
-            </div>
-            <% }) %>
-          <small class="d-block text-right mt-3">
-           
-          </small>
-          <% } %>
-      </div>
-
-      <div class="my-3 p-3 bg-white rounded box-shadow">
-        <h6 class="border-bottom border-gray pb-2 mb-0">Recent updates</h6>
+        <h6 class="border-bottom border-gray pb-2 mb-0">All updates</h6>
         <% if(typeof tasks != 'undefined') { %>
           <% tasks.forEach(function(task) { %>
             <div class="media text-muted pt-3">
               <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <strong class="d-block text-gray-dark"><%= task.created_date %></strong>
+                    <a href="/worklogs/update/<%= task.id %>">Edit</a>
+                </div>
                 <h4 class="d-block"> <%= task.task_description %></h4>
-                <span class="d-block"> <%= task.created_date %></span>
               </div>
-            </div>
-          <% }) %>
-          <small class="d-block text-right mt-3">
-            <a href="/worklogs/allupdates">All updates</a>
-          </small>
+             </div>
+             <% }) %>
+         
       <% } else {%>
         <div class="media text-muted pt-3">
           <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
@@ -101,8 +83,12 @@
           </div>
          </div>
         <% } %>
-       </div>
-      </main>
+       
+        
+      </div>
+
+      
+    </main>
 
 
     <%- include('../footers') -%>

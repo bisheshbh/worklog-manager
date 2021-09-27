@@ -45,17 +45,16 @@
           </div>
     <% }) %>
 <% } %>
-    <form action="/worklogs/create" method="POST">
+    <form action="/worklogs/update/<%=task.id%>" method="POST">
     <div class="form-group">
-      <div class="form-group">
-        <label for="created_date">Date</label>
-        <input readonly type="text" class="form-control" id="created_date" name="created_date" value="<%=data.created_date%>">
-      </div>
       <label for="task_description">Task description</label>
-      <textarea type="text" name="task_description" class="form-control" id="task_description" placeholder="task_description"></textarea>
+      <textarea type="text" name="task_description" class="form-control" id="task_description" placeholder="task_description" ><%=task.task_description%></textarea>
     </div>
-    
-    <input hidden type="number" class="form-check-input" name="user_id" id="user_id" value="<%=data.user_id%>">
+    <div class="form-group">
+      <label for="created_date">Date</label>
+      <input readonly type="text" class="form-control" id="created_date" name="created_date" value="<%=task.created_date%>">
+    </div>
+    <input hidden type="number" class="form-check-input" name="user_id" id="user_id" value="<%=userId%>">
       
     
     <button type="submit" class="btn btn-primary">Submit</button>

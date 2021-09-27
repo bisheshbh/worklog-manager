@@ -1,83 +1,154 @@
+import { Result } from 'express-validator';
 import { RowDataPacket } from 'mysql2';
 import {db} from '../../database/config';
 import { usersService } from '../../users/services/users.service';
-import {createTask, updateTask, UpdateWorklog} from '../types/worklogs.types';
 
 class WorkLogsModel {
     tableName = 'task';
 
     create  = async(task_description:string , created_date:string , user_id:string) : Promise<Boolean>=> {
-         let is_edited = 0
+        let is_edited = 0
         const sql = `
         INSERT INTO ${this.tableName} 
         (task_description , created_date , is_edited, user_id) VALUES ("${task_description}", "${created_date}", ${is_edited}, ${user_id})
         `; 
-        const result = await db.run(sql);
-        if(result!=false){
-            return true;
+        try{
+            await db.run(sql);
+        }catch(error){
+            throw error;
         }
-        return false;
+        return false
     }
 
     getAllUserTask = async(cookie:string) : Promise<[]>=> {
         const currentUserId = await usersService.getCurrentUserId(cookie);
         const sql = `
-        SELECT * FROM ${this.tableName} INNER JOIN 
+        SELECT task.id, task_description, created_date FROM ${this.tableName} INNER JOIN 
         user ON ${this.tableName}.user_id=user.id
         WHERE ${this.tableName}.user_id=${currentUserId}`;
-        const result: any = await db.run(sql);
-        if(result!=false){
+        try{
+            const result: any = await db.run(sql);
             return result;
+        }catch(error){
+            throw error;
         }
-        return [];
     }
 
     getAllTask = async() : Promise<[]> => {
         const sql = `
-        SELECT * FROM ${this.tableName} INNER JOIN 
+        SELECT task.id,task_description,created_date,username FROM ${this.tableName} INNER JOIN 
         user ON ${this.tableName}.user_id=user.id
         `;
-        const result: any = await db.run(sql);
-        if(result!=false){
+        try {
+            const result: any = await db.run(sql);
             return result;
-        }
-        return [];
+        } catch (error) {
+            throw error;
+        }   
     }
 
     getAllUserFeedback = async(cookie:string): Promise<[]> => {
         const currentUserId = await usersService.getCurrentUserId(cookie);
         const sql = 
         `
-        SELECT task_description, comment, feedback.id, 
+        SELECT username , task_description, comment, feedback.id, 
         feedback.created_date FROM ${this.tableName} 
-        INNER JOIN user
-        ON ${this.tableName}.user_id=user.id INNER JOIN 
-        feedback ON 
-        ${this.tableName}.id=feedback.id
+        INNER JOIN feedback
+        ON ${this.tableName}.id=feedback.task_id INNER JOIN 
+        user ON 
+        feedback.user_id=user.id
         WHERE ${this.tableName}.user_id=${currentUserId}`;
-        const result:any = await db.run(sql);
-        if(result!=false){
+        try {
+            const result:any = await db.run(sql);
             return result;
+        } catch (error) {
+            throw error;
         }
-        return [];
     }
 
     getTaskById = async(task_id:number) => {
         const sql = 
         `
-        SELECT task_description , username FROM ${this.tableName} INNER JOIN
+        SELECT task.id, task_description , username, created_date FROM ${this.tableName} INNER JOIN
         user ON ${this.tableName}.user_id=user.id
+        WHERE ${this.tableName}.id=${task_id}
         `;
-        const result :any = await db.run(sql);
-        if(result!=false){
-            return result;  
+        try {
+            const result:any = await db.run(sql)
+            return result;
+        } catch (error) {
+            throw error;
         }
-        return []
     }
     
-    updateTask : updateTask= async({task_description, user_id}) : Promise<Boolean> => {
-        // TODO
-        return false;
+    updateTask = async(task_description:string, created_date:string ,task_id:string) => {
+        const sql = 
+        `
+        UPDATE ${this.tableName} SET task_description="${task_description}" WHERE ${this.tableName}.id=${task_id}
+        `
+        try {
+            await db.run(sql);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    filterTaskByDate = async(date:string, cookie:string, singleUser:boolean) : Promise<[]>=> {
+        const currentUserId = await usersService.getCurrentUserId(cookie);
+        const sqlCurrentUser:string = 
+        `
+        SELECT task.id, task_description , username, created_date FROM ${this.tableName} INNER JOIN
+        user ON ${this.tableName}.user_id=user.id WHERE task.created_date="${date}" AND task.user_id=${currentUserId}
+        `
+        const sqlAllUser = 
+        `
+        SELECT task.id, task_description , username, created_date FROM ${this.tableName} INNER JOIN
+        user ON ${this.tableName}.user_id=user.id WHERE task.created_date="${date}"
+        `
+        const sql = singleUser ? sqlCurrentUser : sqlAllUser;
+        try{
+            const result : any = db.run(sql)
+            return result;
+        }catch(error){
+            throw error;
+        }
+    }
+
+    filterTaskByDepartment = async(department_id:number)=>{
+        const sql = 
+        `
+        SELECT task.id, task_description , username, created_date FROM ${this.tableName} INNER JOIN 
+        user ON ${this.tableName}.user_id=user.id
+        INNER JOIN department ON user.department_id=department.id
+        WHERE department.id=${department_id}
+        `
+        try{
+            const result : any = db.run(sql);
+            return result;
+        }catch(error){
+            throw error;
+        }
+    }
+
+    deleteFeedback = async(task_id:number) => {
+        const sql = 
+        `DELETE FROM feedback WHERE task_id=${task_id}`
+        try {
+            await db.run(sql);
+        } catch (error) {
+            throw error
+        }
+    }
+
+    deleteTask = async(task_id:number) => {
+        const sql = 
+        `DELETE FROM ${this.tableName} WHERE id=${task_id}`
+
+        try {
+            await db.run(sql);
+        } catch (error) {
+            throw error;
+        }
     }
 }
 
