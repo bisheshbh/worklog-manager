@@ -66,7 +66,7 @@ class WorklogsController {
     getUpdateTask : RequestHandler = async(req:express.Request, res:express.Response) => {
         const userId:number = await usersService.getCurrentUserId(req.cookies.sid);
         const [task] = await worklogsModel.getTaskById(+req.params.id);
-        if(this.created_date != this.parseDate(task.created_date)){
+       if(this.created_date != this.parseDate(task.created_date)){
             const error  = encodeURIComponent(" Forbidden ! Today's post can only be edited");
             return res.redirect("/worklogs/allupdates?error="+error);
         }
@@ -81,9 +81,13 @@ class WorklogsController {
             return res.render('worklogs/update-worklog', {errors,task, userId});
         }
         try {
+            if(this.created_date != this.parseDate(task.created_date)){
+                return res.redirect("/worklogs/allupdates?error="+encodeURIComponent("Forbidden"));
+            }
             await worklogsModel.updateTask(req.body.task_description, req.body.created_date, task.id);
             return res.redirect('/worklogs/main?info='+encodeURIComponent("Task updated successfully"));
         } catch (error) {
+            console.log(error)
             return res.render('worklogs/update-worklog', {errors:[{msg:'Something is wrong !'}], task, userId});
         }
     }

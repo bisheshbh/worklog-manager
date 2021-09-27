@@ -84,7 +84,7 @@ class AdminController{
             res.render('admin/update-user', {errors , userId, info, user});
         }
         try {
-            if(user.is_admin ===1){
+            if(user.is_admin === 1){
                 await userModel.updateUser(userId, req.body.username , req.body.email_address, 1);
                 return res.redirect('/admin/users/?info='+encodeURIComponent("User updated successfully"));
             }
